@@ -2,8 +2,11 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.database import engine, Base
 from app.models import contact
-from app.routes.contact import router as contacts_router  # Ändrad rad
+from app.models import job_application
+from app.routes.contact import router as contacts_router
+from app.routes import applications
 
+# Skapa databastabeller (bara EN gång!)
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="Job Application Tracker")
@@ -16,7 +19,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(contacts_router)  # Ändrad rad
+# Registrera båda routes
+app.include_router(contacts_router)
+app.include_router(applications.router)
 
 @app.get("/")
 def root():
