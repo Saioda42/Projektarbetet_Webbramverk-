@@ -2,6 +2,7 @@
 venv/
 __pycache__/
 *.pyc
+clear
 
 # Node
 node_modules/
@@ -13,3 +14,10 @@ dist/
 # IDE
 .vscode/
 .idea/
+
+# Docker
+docker-compose.ymldocker-compose.yml
+
+docker-compose.yml
+docker-compose.override.yml
+
