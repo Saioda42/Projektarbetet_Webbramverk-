@@ -1,5 +1,3 @@
-// frontend/src/components/contacts/ContactList.jsx
-
 import { useState, useEffect } from 'react';
 import api from '../../services/api';
 import ContactForm from './ContactForm';
