@@ -2,13 +2,15 @@
 
 import { useState, useEffect } from 'react';
 import api from '../../services/api';
+import ContactForm from './ContactForm';
 
 function ContactList() {
   const [contacts, setContacts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [editingContact, setEditingContact] = useState(null);
+  const [showForm, setShowForm] = useState(false);
 
-  // Hämta alla contacts när komponenten laddas
   useEffect(() => {
     fetchContacts();
   }, []);
@@ -34,7 +36,6 @@ function ContactList() {
 
     try {
       await api.delete(`/contacts/${id}`);
-      // Ta bort från listan direkt
       setContacts(contacts.filter(contact => contact.id !== id));
     } catch (err) {
       alert('Kunde inte radera kontakt');
@@ -42,12 +43,58 @@ function ContactList() {
     }
   };
 
-  if (loading) return <div>Laddar kontakter...</div>;
-  if (error) return <div style={{ color: 'red' }}>{error}</div>;
+  const handleEdit = (contact) => {
+    setEditingContact(contact);
+    setShowForm(true);
+  };
+
+  const handleContactCreated = () => {
+    fetchContacts();
+    setShowForm(false);
+  };
+
+  const handleContactUpdated = () => {
+    fetchContacts();
+    setEditingContact(null);
+    setShowForm(false);
+  };
+
+  const handleCancel = () => {
+    setEditingContact(null);
+    setShowForm(false);
+  };
+
+  if (loading) return <div style={{ padding: '20px' }}>Laddar kontakter...</div>;
+  if (error) return <div style={{ padding: '20px', color: 'red' }}>{error}</div>;
 
   return (
-    <div style={{ padding: '20px' }}>
+    <div style={{ padding: '20px', maxWidth: '1200px', margin: '0 auto' }}>
       <h1>Mina Kontakter</h1>
+      
+      <button
+        onClick={() => setShowForm(!showForm)}
+        style={{
+          padding: '10px 20px',
+          backgroundColor: '#4CAF50',
+          color: 'white',
+          border: 'none',
+          borderRadius: '4px',
+          cursor: 'pointer',
+          marginBottom: '20px',
+          fontWeight: 'bold'
+        }}
+      >
+        {showForm ? 'Dölj Formulär' : '+ Skapa Ny Kontakt'}
+      </button>
+
+      {showForm && (
+        <ContactForm
+          editContact={editingContact}
+          onContactCreated={handleContactCreated}
+          onContactUpdated={handleContactUpdated}
+          onCancel={handleCancel}
+        />
+      )}
       
       {contacts.length === 0 ? (
         <p>Inga kontakter än. Skapa din första!</p>
@@ -74,9 +121,10 @@ function ContactList() {
               
               <div style={{ marginTop: '10px', display: 'flex', gap: '10px' }}>
                 <button 
+                  onClick={() => handleEdit(contact)}
                   style={{
                     padding: '8px 16px',
-                    backgroundColor: '#4CAF50',
+                    backgroundColor: '#2196F3',
                     color: 'white',
                     border: 'none',
                     borderRadius: '4px',
