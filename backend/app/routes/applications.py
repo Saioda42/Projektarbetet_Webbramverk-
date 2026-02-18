@@ -1,6 +1,7 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Query
 from sqlalchemy.orm import Session
-from typing import List, Optional
+from sqlalchemy import desc, asc
+from typing import Optional
 from datetime import date
 
 from app.database import get_db
@@ -67,9 +68,7 @@ def create_application(
 # READ (ALL)
 # ---------
 
-from typing import Optional
-from fastapi import Query
-from sqlalchemy import desc, asc
+
 
 @router.get("/", response_model=list[JobApplicationResponse])
 def get_applications(
