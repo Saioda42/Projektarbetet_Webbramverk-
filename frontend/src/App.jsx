@@ -1,7 +1,10 @@
-import ContactList from './components/contacts/ContactList'
+import Dashboard from "./components/applications/Dashboard";
 
-function App() {
-  return <ContactList />
+export default function App() {
+  return (
+    <div>
+      <h1>Job Application Tracker</h1>
+      <Dashboard />
+    </div>
+  );
 }
-
-export default App
