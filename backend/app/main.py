@@ -5,11 +5,15 @@ from app.models import contact
 from app.models import job_application
 from app.routes.contact import router as contacts_router
 from app.routes import applications
+from app.models.user import User
+
+from app.routes.auth import router as auth_router
+
+app = FastAPI(title="Job Application Tracker")
+app.include_router(auth_router)
 
 # Skapa databastabeller (bara EN gång!)
 Base.metadata.create_all(bind=engine)
-
-app = FastAPI(title="Job Application Tracker")
 
 app.add_middleware(
     CORSMiddleware,
