@@ -27,6 +27,7 @@ app.add_middleware(
 app.include_router(contacts_router)
 app.include_router(applications.router)
 
+
 @app.get("/")
 def root():
     return {"message": "Job Tracker API"}
