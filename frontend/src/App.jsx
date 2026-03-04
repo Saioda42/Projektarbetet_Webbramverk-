@@ -8,6 +8,7 @@ import Register from "./components/Register";
 import ContactList from "./components/contacts/ContactList";
 import Navbar from "./components/Navbar";
 import ProtectedRoute from "./components/ProtectedRoute";
+import CVEditor from "./components/cv/CVEditor";
 
 export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -61,6 +62,15 @@ export default function App() {
           element={
             <ProtectedRoute isLoggedIn={isLoggedIn}>
               <ContactList />
+            </ProtectedRoute>
+          } 
+        />
+        
+        <Route 
+          path="/cv" 
+          element={
+            <ProtectedRoute isLoggedIn={isLoggedIn}>
+              <CVEditor />
             </ProtectedRoute>
           } 
         />

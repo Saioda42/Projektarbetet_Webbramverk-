@@ -51,6 +51,23 @@ function Navbar({ onLogout }) {
         >
           👥 Kontakter
         </Link>
+
+        <Link 
+          to="/cv" 
+          style={{
+            color: 'white',
+            textDecoration: 'none',
+            fontSize: '18px',
+            fontWeight: 'bold',
+            padding: '8px 16px',
+            borderRadius: '4px',
+            transition: 'background-color 0.2s'
+          }}
+          onMouseOver={(e) => e.target.style.backgroundColor = '#1976D2'}
+          onMouseOut={(e) => e.target.style.backgroundColor = 'transparent'}
+        >
+          📄 Mitt CV
+        </Link>
       </div>
 
       <button
