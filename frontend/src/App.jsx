@@ -1,7 +1,10 @@
+// frontend/src/App.jsx
+
 import { useState, useEffect } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import Dashboard from "./components/applications/Dashboard";
 import Login from "./components/Login";
+import Register from "./components/Register";
 import ContactList from "./components/contacts/ContactList";
 import Navbar from "./components/Navbar";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -32,10 +35,15 @@ export default function App() {
       {isLoggedIn && <Navbar onLogout={handleLogout} />}
       
       <Routes>
-        {/* Login route - skicka med handleLogin */}
+        {/* Login & Register routes - alltid tillgängliga */}
         <Route 
           path="/login" 
           element={<Login onLogin={handleLogin} />} 
+        />
+        
+        <Route 
+          path="/register" 
+          element={<Register onLogin={handleLogin} />} 
         />
         
         {/* Skyddade routes - kräver inloggning */}
