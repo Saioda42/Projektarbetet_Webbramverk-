@@ -1,7 +1,7 @@
 annotated-doc==0.0.4
 annotated-types==0.7.0
 anyio==4.12.1
-bcrypt==3.2.2
+bcrypt==4.0.1
 cffi==2.0.0
 click==8.3.1
 colorama==0.4.6
@@ -28,4 +28,9 @@ SQLAlchemy==2.0.46
 starlette==0.50.0
 typing-inspection==0.4.2
 typing_extensions==4.15.0
+<<<<<<< HEAD
+tzdata==2025.2
+uvicorn==0.41.0
+=======
 uvicorn==0.40.0
+>>>>>>> bf379bf8e2ec9b37f4e9ca15a6199fda18aad23e

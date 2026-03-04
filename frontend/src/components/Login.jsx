@@ -1,39 +1,41 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
+import api from "../services/api";
 
-function Login() {
+function Login({ onLogin }) {  // Lägg till onLogin prop här
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
-  e.preventDefault();
+    e.preventDefault();
+    setError("");
+    setLoading(true);
 
-  try {
-    const response = await fetch("http://127.0.0.1:8000/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded"
-      },
-      body: new URLSearchParams({
-        username: email,
-        password: password
-      })
-    });
+    try {
+      // Skicka login request till backend
+      const response = await api.post("/auth/login", {
+        email,
+        password
+      });
 
-    if (!response.ok) {
-      throw new Error("Invalid credentials");
+      // Spara token
+      localStorage.setItem("token", response.data.access_token);
+      
+      // Uppdatera state
+      onLogin();
+      
+      // Gå till dashboard
+      navigate("/");
+    } catch (err) {
+      console.error("Login error:", err);
+      setError(err.response?.data?.detail || "Fel email eller lösenord");
+    } finally {
+      setLoading(false);
     }
-
-    const data = await response.json();
-
-    localStorage.setItem("token", data.access_token);
-    navigate("/");
-  } catch (error) {
-    alert("Login failed");
-    console.error(error);
-  }
-};
+  };
 
   return (
     <div
@@ -52,20 +54,37 @@ function Login() {
           padding: "40px",
           borderRadius: "12px",
           boxShadow: "0 10px 25px rgba(0,0,0,0.08)",
-          width: "300px"
+          width: "350px"
         }}
       >
-        <h2 style={{ marginBottom: "20px" }}>Login</h2>
+        <h2 style={{ marginBottom: "20px", textAlign: "center" }}>Login</h2>
+
+        {error && (
+          <div style={{
+            backgroundColor: "#ffebee",
+            color: "#c62828",
+            padding: "10px",
+            borderRadius: "4px",
+            marginBottom: "15px",
+            textAlign: "center"
+          }}>
+            {error}
+          </div>
+        )}
 
         <input
           type="email"
           placeholder="Email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
+          required
           style={{
             width: "100%",
-            padding: "10px",
-            marginBottom: "15px"
+            padding: "12px",
+            marginBottom: "15px",
+            border: "1px solid #ddd",
+            borderRadius: "6px",
+            fontSize: "16px"
           }}
         />
 
@@ -74,28 +93,53 @@ function Login() {
           placeholder="Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
+          required
           style={{
             width: "100%",
-            padding: "10px",
-            marginBottom: "20px"
+            padding: "12px",
+            marginBottom: "20px",
+            border: "1px solid #ddd",
+            borderRadius: "6px",
+            fontSize: "16px"
           }}
         />
 
         <button
           type="submit"
+          disabled={loading}
           style={{
             width: "100%",
-            padding: "10px",
-            backgroundColor: "#3498db",
+            padding: "12px",
+            backgroundColor: loading ? "#ccc" : "#3498db",
             border: "none",
             color: "white",
             fontWeight: "bold",
-            cursor: "pointer",
-            borderRadius: "6px"
+            cursor: loading ? "not-allowed" : "pointer",
+            borderRadius: "6px",
+            fontSize: "16px"
           }}
         >
-          Login
+          {loading ? "Loggar in..." : "Logga in"}
         </button>
+
+        <p style={{ 
+          marginTop: "20px", 
+          textAlign: "center",
+          color: "#666",
+          fontSize: "14px"
+        }}>
+          Inget konto än?{" "}
+          <Link 
+            to="/register" 
+            style={{ 
+              color: "#3498db", 
+              textDecoration: "none",
+              fontWeight: "bold"
+            }}
+          >
+            Skapa konto här
+          </Link>
+        </p>
       </form>
     </div>
   );
