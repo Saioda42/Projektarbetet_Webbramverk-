@@ -8,6 +8,8 @@ from app.database import get_db
 from app.models.job_application import JobApplication
 from pydantic import BaseModel
 
+from app.routes.auth import get_current_user
+
 
 router = APIRouter(
     prefix="/applications",
@@ -75,6 +77,7 @@ def get_applications(
     status: Optional[str] = Query(None, description="Filter by status"),
     order: Optional[str] = Query("desc", description="Sort order: asc or desc"),
     db: Session = Depends(get_db),
+    current_user: str = Depends(get_current_user),
 ):
     query = db.query(JobApplication)
 

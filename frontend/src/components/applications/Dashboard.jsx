@@ -17,7 +17,11 @@ function Dashboard() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("http://localhost:8000/applications")
+    fetch("http://127.0.0.1:8000/applications/", {
+  headers: {
+    Authorization: `Bearer ${localStorage.getItem("token")}`
+  }
+})
       .then(res => res.json())
       .then(data => {
         setApplications(data);
@@ -93,8 +97,11 @@ function Dashboard() {
 
     try {
       await fetch(`http://localhost:8000/applications/${id}`, {
-        method: "DELETE",
-      });
+  method: "DELETE",
+  headers: {
+    Authorization: `Bearer ${localStorage.getItem("token")}`
+  }
+});
 
       setApplications(applications.filter(app => app.id !== id));
     } catch (error) {
@@ -115,23 +122,6 @@ function Dashboard() {
       }}
     >
       <h2 style={{ marginBottom: "30px" }}>Dashboard</h2>
-      <button
-  onClick={() => {
-    localStorage.removeItem("token");
-    navigate("/login");
-  }}
-  style={{
-    marginBottom: "20px",
-    padding: "8px 12px",
-    backgroundColor: "#e74c3c",
-    color: "white",
-    border: "none",
-    borderRadius: "6px",
-    cursor: "pointer"
-  }}
->
-  Logout
-</button>
 
       {/* Statistik */}
       <div style={{ display: "flex", gap: "20px", marginBottom: "30px" }}>
