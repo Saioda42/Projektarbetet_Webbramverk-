@@ -1,21 +1,39 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-function Login({ onLogin }) {
+function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
-  const handleLogin = (e) => {
-    e.preventDefault();
+  const handleLogin = async (e) => {
+  e.preventDefault();
 
-    // Tillfällig fake login (vi kopplar backend sen)
-    if (email && password) {
-      localStorage.setItem("token", "fake-jwt-token");
-      onLogin(); // Uppdatera state i App
-      navigate("/");
+  try {
+    const response = await fetch("http://127.0.0.1:8000/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      body: new URLSearchParams({
+        username: email,
+        password: password
+      })
+    });
+
+    if (!response.ok) {
+      throw new Error("Invalid credentials");
     }
-  };
+
+    const data = await response.json();
+
+    localStorage.setItem("token", data.access_token);
+    navigate("/");
+  } catch (error) {
+    alert("Login failed");
+    console.error(error);
+  }
+};
 
   return (
     <div
