@@ -1,35 +1,29 @@
-import { getApplications, deleteApplication } from "../../services/applicationsApi";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-
-
-
+import { getApplications, deleteApplication } from "../../services/applicationsApi";
 
 function Dashboard() {
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-
-    if (!token) {
-      navigate("/login");
-    }
-  }, [navigate]);
-
   const [applications, setApplications] = useState([]);
   const [filter, setFilter] = useState("all");
   const [loading, setLoading] = useState(true);
 
+  /* =========================
+     Hämta applications
+  ========================= */
+
   useEffect(() => {
-  getApplications()
-    .then((res) => {
-      setApplications(res.data);
-      setLoading(false);
-    })
-    .catch((err) => {
-      console.error(err);
-    });
-}, []);
+    const fetchApplications = async () => {
+      try {
+        const res = await getApplications();
+        setApplications(res.data);
+      } catch (err) {
+        console.error("Failed to load applications:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchApplications();
+  }, []);
 
   /* =========================
      Statistik
@@ -50,7 +44,7 @@ function Dashboard() {
   ).length;
 
   /* =========================
-     Status normalisering
+     Status helpers
   ========================= */
 
   const normalizeStatus = (status) => {
@@ -88,23 +82,23 @@ function Dashboard() {
   ========================= */
 
   const handleDelete = async (id) => {
-  const confirmDelete = window.confirm(
-    "Are you sure you want to delete this application?"
-  );
-
-  if (!confirmDelete) return;
-
-  try {
-    await deleteApplication(id);
-
-    setApplications(prev =>
-      prev.filter(app => app.id !== id)
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this application?"
     );
 
-  } catch (error) {
-    console.error("Delete failed:", error);
-  }
-};
+    if (!confirmDelete) return;
+
+    try {
+      await deleteApplication(id);
+
+      setApplications(prev =>
+        prev.filter(app => app.id !== id)
+      );
+
+    } catch (error) {
+      console.error("Delete failed:", error);
+    }
+  };
 
   /* =========================
      Render
@@ -171,32 +165,22 @@ function Dashboard() {
 
             return (
               <div
-  key={app.id}
-  onMouseEnter={(e) => {
-    e.currentTarget.style.transform = "translateY(-6px)";
-    e.currentTarget.style.boxShadow = "0 12px 25px rgba(0,0,0,0.12)";
-  }}
-  onMouseLeave={(e) => {
-    e.currentTarget.style.transform = "translateY(0)";
-    e.currentTarget.style.boxShadow = "0 6px 15px rgba(0,0,0,0.08)";
-  }}
-  style={{
-    borderRadius: "12px",
-    padding: "20px",
-    width: "260px",
-    backgroundColor: "white",
-    boxShadow: "0 6px 15px rgba(0,0,0,0.08)",
-    transition: "all 0.2s ease",
-    cursor: "default"
-  }}
->
-                <h3 style={{ marginBottom: "10px" }}>{app.company}</h3>
+                key={app.id}
+                style={{
+                  borderRadius: "12px",
+                  padding: "20px",
+                  width: "260px",
+                  backgroundColor: "white",
+                  boxShadow: "0 6px 15px rgba(0,0,0,0.08)"
+                }}
+              >
+                <h3>{app.company}</h3>
 
-                <p style={{ margin: "6px 0" }}>
+                <p>
                   <strong>Role:</strong> {app.role}
                 </p>
 
-                <p style={{ margin: "6px 0", color: "#666", fontSize: "14px" }}>
+                <p style={{ color: "#666", fontSize: "14px" }}>
                   <strong>Applied:</strong>{" "}
                   {new Date(app.applied_date).toLocaleDateString()}
                 </p>
@@ -223,18 +207,17 @@ function Dashboard() {
                   </span>
 
                   <button
-  onClick={() => handleDelete(app.id)}
-  style={{
-    border: "none",
-    background: "none",
-    cursor: "pointer",
-    fontSize: "22px",
-    color: "#e74c3c",
-    padding: 0
-  }}
->
-  🗑
-</button>
+                    onClick={() => handleDelete(app.id)}
+                    style={{
+                      border: "none",
+                      background: "none",
+                      cursor: "pointer",
+                      fontSize: "22px",
+                      color: "#e74c3c"
+                    }}
+                  >
+                    🗑
+                  </button>
                 </div>
               </div>
             );
@@ -245,6 +228,7 @@ function Dashboard() {
 }
 
 /* Statistik-card */
+
 function StatCard({ title, value, color }) {
   return (
     <div
