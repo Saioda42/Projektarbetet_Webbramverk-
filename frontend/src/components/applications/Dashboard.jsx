@@ -1,5 +1,9 @@
+import { getApplications, deleteApplication } from "../../services/applicationsApi";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+
+
+
 
 function Dashboard() {
   const navigate = useNavigate();
@@ -17,21 +21,15 @@ function Dashboard() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("http://127.0.0.1:8000/applications/", {
-  headers: {
-    Authorization: `Bearer ${localStorage.getItem("token")}`
-  }
-})
-      .then(res => res.json())
-      .then(data => {
-        setApplications(data);
-        setLoading(false);
-      })
-      .catch(err => {
-        console.error(err);
-        setLoading(false);
-      });
-  }, []);
+  getApplications()
+    .then((res) => {
+      setApplications(res.data);
+      setLoading(false);
+    })
+    .catch((err) => {
+      console.error(err);
+    });
+}, []);
 
   /* =========================
      Statistik
@@ -90,24 +88,23 @@ function Dashboard() {
   ========================= */
 
   const handleDelete = async (id) => {
-    const confirmDelete = window.confirm(
-      "Are you sure you want to delete this application?"
+  const confirmDelete = window.confirm(
+    "Are you sure you want to delete this application?"
+  );
+
+  if (!confirmDelete) return;
+
+  try {
+    await deleteApplication(id);
+
+    setApplications(prev =>
+      prev.filter(app => app.id !== id)
     );
-    if (!confirmDelete) return;
 
-    try {
-      await fetch(`http://localhost:8000/applications/${id}`, {
-  method: "DELETE",
-  headers: {
-    Authorization: `Bearer ${localStorage.getItem("token")}`
+  } catch (error) {
+    console.error("Delete failed:", error);
   }
-});
-
-      setApplications(applications.filter(app => app.id !== id));
-    } catch (error) {
-      console.error("Delete failed:", error);
-    }
-  };
+};
 
   /* =========================
      Render
