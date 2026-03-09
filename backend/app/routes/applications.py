@@ -58,8 +58,12 @@ class JobApplicationResponse(JobApplicationCreate):
 def create_application(
     application: JobApplicationCreate,
     db: Session = Depends(get_db),
+    current_user = Depends(get_current_user),
 ):
-    db_application = JobApplication(**application.dict())
+    db_application = JobApplication(
+    **application.dict(),
+    user_id=current_user.id
+)
     db.add(db_application)
     db.commit()
     db.refresh(db_application)
@@ -79,7 +83,9 @@ def get_applications(
     db: Session = Depends(get_db),
     current_user: str = Depends(get_current_user),
 ):
-    query = db.query(JobApplication)
+    query = db.query(JobApplication).filter(
+    JobApplication.user_id == current_user.id
+)
 
     # Filter
     if status:
@@ -105,12 +111,16 @@ def get_applications(
 def get_application(
     application_id: int,
     db: Session = Depends(get_db),
+    current_user = Depends(get_current_user),
 ):
     application = (
-        db.query(JobApplication)
-        .filter(JobApplication.id == application_id)
-        .first()
+    db.query(JobApplication)
+    .filter(
+        JobApplication.id == application_id,
+        JobApplication.user_id == current_user.id
     )
+    .first()
+)
 
     if application is None:
         raise HTTPException(
@@ -131,12 +141,15 @@ def get_application(
 )
 def update_application(
     application_id: int,
-    updates: JobApplicationUpdate,
     db: Session = Depends(get_db),
+    current_user = Depends(get_current_user)
 ):
     application = (
         db.query(JobApplication)
-        .filter(JobApplication.id == application_id)
+        .filter(
+    JobApplication.id == application_id,
+    JobApplication.user_id == current_user.id
+)
         .first()
     )
 
@@ -165,10 +178,14 @@ def update_application(
 def delete_application(
     application_id: int,
     db: Session = Depends(get_db),
+    current_user = Depends(get_current_user)
 ):
     application = (
         db.query(JobApplication)
-        .filter(JobApplication.id == application_id)
+        .filter(
+    JobApplication.id == application_id,
+    JobApplication.user_id == current_user.id
+)
         .first()
     )
 

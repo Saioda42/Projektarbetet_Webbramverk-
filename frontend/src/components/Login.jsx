@@ -2,7 +2,8 @@ import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import api from "../services/api";
 
-function Login({ onLogin }) {  // Lägg till onLogin prop här
+function Login({ onLogin }) {
+  // Lägg till onLogin prop här
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -16,17 +17,21 @@ function Login({ onLogin }) {  // Lägg till onLogin prop här
 
     try {
       // Skicka login request till backend
-      const response = await api.post("/auth/login", {
-        email,
-        password
+      // MOT DETTA:
+      const formData = new URLSearchParams();
+      formData.append("username", email);
+      formData.append("password", password);
+
+      const response = await api.post("/auth/login", formData, {
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
       });
 
       // Spara token
       localStorage.setItem("token", response.data.access_token);
-      
+
       // Uppdatera state
       onLogin();
-      
+
       // Gå till dashboard
       navigate("/");
     } catch (err) {
@@ -44,7 +49,7 @@ function Login({ onLogin }) {  // Lägg till onLogin prop här
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        backgroundColor: "#f5f7fa"
+        backgroundColor: "#f5f7fa",
       }}
     >
       <form
@@ -54,20 +59,22 @@ function Login({ onLogin }) {  // Lägg till onLogin prop här
           padding: "40px",
           borderRadius: "12px",
           boxShadow: "0 10px 25px rgba(0,0,0,0.08)",
-          width: "350px"
+          width: "350px",
         }}
       >
         <h2 style={{ marginBottom: "20px", textAlign: "center" }}>Login</h2>
 
         {error && (
-          <div style={{
-            backgroundColor: "#ffebee",
-            color: "#c62828",
-            padding: "10px",
-            borderRadius: "4px",
-            marginBottom: "15px",
-            textAlign: "center"
-          }}>
+          <div
+            style={{
+              backgroundColor: "#ffebee",
+              color: "#c62828",
+              padding: "10px",
+              borderRadius: "4px",
+              marginBottom: "15px",
+              textAlign: "center",
+            }}
+          >
             {error}
           </div>
         )}
@@ -84,7 +91,7 @@ function Login({ onLogin }) {  // Lägg till onLogin prop här
             marginBottom: "15px",
             border: "1px solid #ddd",
             borderRadius: "6px",
-            fontSize: "16px"
+            fontSize: "16px",
           }}
         />
 
@@ -100,7 +107,7 @@ function Login({ onLogin }) {  // Lägg till onLogin prop här
             marginBottom: "20px",
             border: "1px solid #ddd",
             borderRadius: "6px",
-            fontSize: "16px"
+            fontSize: "16px",
           }}
         />
 
@@ -116,25 +123,27 @@ function Login({ onLogin }) {  // Lägg till onLogin prop här
             fontWeight: "bold",
             cursor: loading ? "not-allowed" : "pointer",
             borderRadius: "6px",
-            fontSize: "16px"
+            fontSize: "16px",
           }}
         >
           {loading ? "Loggar in..." : "Logga in"}
         </button>
 
-        <p style={{ 
-          marginTop: "20px", 
-          textAlign: "center",
-          color: "#666",
-          fontSize: "14px"
-        }}>
+        <p
+          style={{
+            marginTop: "20px",
+            textAlign: "center",
+            color: "#666",
+            fontSize: "14px",
+          }}
+        >
           Inget konto än?{" "}
-          <Link 
-            to="/register" 
-            style={{ 
-              color: "#3498db", 
+          <Link
+            to="/register"
+            style={{
+              color: "#3498db",
               textDecoration: "none",
-              fontWeight: "bold"
+              fontWeight: "bold",
             }}
           >
             Skapa konto här
