@@ -3,7 +3,6 @@ import { useNavigate, Link } from "react-router-dom";
 import api from "../services/api";
 
 function Login({ onLogin }) {
-  // Lägg till onLogin prop här
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -16,8 +15,6 @@ function Login({ onLogin }) {
     setLoading(true);
 
     try {
-      // Skicka login request till backend
-      // MOT DETTA:
       const formData = new URLSearchParams();
       formData.append("username", email);
       formData.append("password", password);
@@ -26,13 +23,8 @@ function Login({ onLogin }) {
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
       });
 
-      // Spara token
       localStorage.setItem("token", response.data.access_token);
-
-      // Uppdatera state
       onLogin();
-
-      // Gå till dashboard
       navigate("/");
     } catch (err) {
       console.error("Login error:", err);
@@ -49,30 +41,31 @@ function Login({ onLogin }) {
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        backgroundColor: "#f5f7fa",
+        background: "#f4f6f8",
       }}
     >
       <form
         onSubmit={handleLogin}
         style={{
-          backgroundColor: "white",
+          background: "white",
           padding: "40px",
           borderRadius: "12px",
-          boxShadow: "0 10px 25px rgba(0,0,0,0.08)",
-          width: "350px",
+          boxShadow: "0 3px 8px rgba(0,0,0,0.05)",
+          width: "380px",
         }}
       >
-        <h2 style={{ marginBottom: "20px", textAlign: "center" }}>Login</h2>
+        <h2 style={{ marginBottom: "25px", textAlign: "center" }}>Login</h2>
 
         {error && (
           <div
             style={{
               backgroundColor: "#ffebee",
-              color: "#c62828",
-              padding: "10px",
-              borderRadius: "4px",
-              marginBottom: "15px",
+              color: "#e74c3c",
+              padding: "12px",
+              borderRadius: "8px",
+              marginBottom: "20px",
               textAlign: "center",
+              fontSize: "14px",
             }}
           >
             {error}
@@ -87,11 +80,12 @@ function Login({ onLogin }) {
           required
           style={{
             width: "100%",
-            padding: "12px",
+            padding: "10px",
             marginBottom: "15px",
-            border: "1px solid #ddd",
+            border: "1px solid #ccc",
             borderRadius: "6px",
-            fontSize: "16px",
+            fontSize: "14px",
+            boxSizing: "border-box",
           }}
         />
 
@@ -103,11 +97,12 @@ function Login({ onLogin }) {
           required
           style={{
             width: "100%",
-            padding: "12px",
+            padding: "10px",
             marginBottom: "20px",
-            border: "1px solid #ddd",
+            border: "1px solid #ccc",
             borderRadius: "6px",
-            fontSize: "16px",
+            fontSize: "14px",
+            boxSizing: "border-box",
           }}
         />
 
@@ -116,14 +111,21 @@ function Login({ onLogin }) {
           disabled={loading}
           style={{
             width: "100%",
-            padding: "12px",
-            backgroundColor: loading ? "#ccc" : "#3498db",
+            padding: "10px",
+            background: loading ? "#ccc" : "#2c7be5",
             border: "none",
             color: "white",
             fontWeight: "bold",
             cursor: loading ? "not-allowed" : "pointer",
-            borderRadius: "6px",
-            fontSize: "16px",
+            borderRadius: "8px",
+            fontSize: "14px",
+            transition: "transform 0.15s",
+          }}
+          onMouseEnter={(e) => {
+            if (!loading) e.currentTarget.style.transform = "scale(1.05)";
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.transform = "scale(1)";
           }}
         >
           {loading ? "Loggar in..." : "Logga in"}
@@ -133,7 +135,7 @@ function Login({ onLogin }) {
           style={{
             marginTop: "20px",
             textAlign: "center",
-            color: "#666",
+            color: "#777",
             fontSize: "14px",
           }}
         >
@@ -141,7 +143,7 @@ function Login({ onLogin }) {
           <Link
             to="/register"
             style={{
-              color: "#3498db",
+              color: "#2c7be5",
               textDecoration: "none",
               fontWeight: "bold",
             }}

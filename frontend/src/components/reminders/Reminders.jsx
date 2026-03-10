@@ -1,5 +1,3 @@
-// frontend/src/components/reminders/Reminders.jsx
-
 import { useState, useEffect } from 'react';
 import {
   getAllReminders,
@@ -7,6 +5,9 @@ import {
   deleteReminder,
   markReminderAsSent
 } from '../../services/reminderApi';
+
+const hoverIn = (e) => (e.currentTarget.style.transform = "scale(1.05)");
+const hoverOut = (e) => (e.currentTarget.style.transform = "scale(1)");
 
 function Reminders() {
   const [reminders, setReminders] = useState([]);
@@ -40,30 +41,17 @@ function Reminders() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    // Skapa Date-objekt från lokal tid
     const localDateTime = new Date(`${formData.remind_date}T${formData.remind_time}`);
-    
-    // Konvertera till UTC ISO-format
     const utcDateTime = localDateTime.toISOString();
 
     try {
       await createReminder({
         title: formData.title,
         description: formData.description,
-        remind_date: utcDateTime,  // Skickar UTC-tid
+        remind_date: utcDateTime,
         application_id: null
       });
-
-      // Rensa formulär
-      setFormData({
-        title: '',
-        description: '',
-        remind_date: '',
-        remind_time: ''
-      });
-
-      // Uppdatera lista
+      setFormData({ title: '', description: '', remind_date: '', remind_time: '' });
       await fetchReminders();
       alert('Påminnelse skapad!');
     } catch (err) {
@@ -94,7 +82,6 @@ function Reminders() {
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
-    // Visa i LOKAL tid för användaren
     return date.toLocaleString('sv-SE', {
       year: 'numeric',
       month: 'long',
@@ -108,28 +95,60 @@ function Reminders() {
     return new Date(dateString) > new Date();
   };
 
-  if (loading) return <div style={{ padding: '20px' }}>Laddar påminnelser...</div>;
+  if (loading) return (
+    <div style={{ padding: "40px", background: "#f4f6f8", minHeight: "100vh" }}>
+      Laddar påminnelser...
+    </div>
+  );
 
   return (
-    <div style={{ padding: '20px', maxWidth: '1200px', margin: '0 auto' }}>
-      <h1>📧 Email-påminnelser</h1>
+    <div style={{ padding: "40px", background: "#f4f6f8", minHeight: "100vh" }}>
 
-      <div style={{ backgroundColor: '#e3f2fd', padding: '15px', borderRadius: '4px', marginBottom: '20px' }}>
-        💡 <strong>Tips:</strong> Välj datum och tid i din lokala tidszon. Påminnelser skickas automatiskt via email!
+      <h2 style={{ marginBottom: "30px" }}>Email-påminnelser</h2>
+
+      <div
+        style={{
+          background: "white",
+          padding: "15px 20px",
+          borderRadius: "12px",
+          boxShadow: "0 3px 8px rgba(0,0,0,0.05)",
+          marginBottom: "20px",
+          color: "#2c7be5",
+          fontSize: "14px",
+        }}
+      >
+        <strong>Tips:</strong> Välj datum och tid i din lokala tidszon. Påminnelser skickas automatiskt via email!
       </div>
 
       {error && (
-        <div style={{ backgroundColor: '#ffebee', padding: '15px', borderRadius: '4px', marginBottom: '20px' }}>
+        <div
+          style={{
+            background: "white",
+            padding: "15px 20px",
+            borderRadius: "12px",
+            boxShadow: "0 3px 8px rgba(0,0,0,0.05)",
+            marginBottom: "20px",
+            color: "#e74c3c",
+          }}
+        >
           {error}
         </div>
       )}
 
-      {/* Formulär för att skapa påminnelse */}
-      <section style={{ backgroundColor: 'white', padding: '20px', borderRadius: '8px', marginBottom: '20px', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }}>
-        <h2>Skapa ny påminnelse</h2>
+      {/* Create reminder form */}
+      <section
+        style={{
+          background: "white",
+          padding: "25px",
+          borderRadius: "12px",
+          boxShadow: "0 3px 8px rgba(0,0,0,0.05)",
+          marginBottom: "20px",
+        }}
+      >
+        <h3 style={{ marginTop: 0 }}>Skapa ny påminnelse</h3>
         <form onSubmit={handleSubmit}>
-          <div style={{ marginBottom: '15px' }}>
-            <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>
+          <div style={{ marginBottom: "15px" }}>
+            <label style={{ display: "block", marginBottom: "5px", fontWeight: "600", fontSize: "14px", color: "#2c3e50" }}>
               Titel *
             </label>
             <input
@@ -138,12 +157,19 @@ function Reminders() {
               onChange={(e) => setFormData({ ...formData, title: e.target.value })}
               placeholder="t.ex. Följ upp ansökan till Spotify"
               required
-              style={{ width: '100%', padding: '10px', borderRadius: '4px', border: '1px solid #ddd' }}
+              style={{
+                width: "100%",
+                padding: "10px",
+                borderRadius: "6px",
+                border: "1px solid #ccc",
+                fontSize: "14px",
+                boxSizing: "border-box",
+              }}
             />
           </div>
 
-          <div style={{ marginBottom: '15px' }}>
-            <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>
+          <div style={{ marginBottom: "15px" }}>
+            <label style={{ display: "block", marginBottom: "5px", fontWeight: "600", fontSize: "14px", color: "#2c3e50" }}>
               Beskrivning
             </label>
             <textarea
@@ -151,13 +177,21 @@ function Reminders() {
               onChange={(e) => setFormData({ ...formData, description: e.target.value })}
               placeholder="Vad vill du bli påmind om?"
               rows="3"
-              style={{ width: '100%', padding: '10px', borderRadius: '4px', border: '1px solid #ddd' }}
+              style={{
+                width: "100%",
+                padding: "10px",
+                borderRadius: "6px",
+                border: "1px solid #ccc",
+                fontSize: "14px",
+                fontFamily: "inherit",
+                boxSizing: "border-box",
+              }}
             />
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px', marginBottom: '15px' }}>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "15px", marginBottom: "20px" }}>
             <div>
-              <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>
+              <label style={{ display: "block", marginBottom: "5px", fontWeight: "600", fontSize: "14px", color: "#2c3e50" }}>
                 Datum *
               </label>
               <input
@@ -165,12 +199,18 @@ function Reminders() {
                 value={formData.remind_date}
                 onChange={(e) => setFormData({ ...formData, remind_date: e.target.value })}
                 required
-                style={{ width: '100%', padding: '10px', borderRadius: '4px', border: '1px solid #ddd' }}
+                style={{
+                  width: "100%",
+                  padding: "10px",
+                  borderRadius: "6px",
+                  border: "1px solid #ccc",
+                  fontSize: "14px",
+                  boxSizing: "border-box",
+                }}
               />
             </div>
-
             <div>
-              <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>
+              <label style={{ display: "block", marginBottom: "5px", fontWeight: "600", fontSize: "14px", color: "#2c3e50" }}>
                 Tid (lokal tid) *
               </label>
               <input
@@ -178,7 +218,14 @@ function Reminders() {
                 value={formData.remind_time}
                 onChange={(e) => setFormData({ ...formData, remind_time: e.target.value })}
                 required
-                style={{ width: '100%', padding: '10px', borderRadius: '4px', border: '1px solid #ddd' }}
+                style={{
+                  width: "100%",
+                  padding: "10px",
+                  borderRadius: "6px",
+                  border: "1px solid #ccc",
+                  fontSize: "14px",
+                  boxSizing: "border-box",
+                }}
               />
             </div>
           </div>
@@ -186,62 +233,82 @@ function Reminders() {
           <button
             type="submit"
             style={{
-              padding: '10px 20px',
-              backgroundColor: '#4CAF50',
-              color: 'white',
-              border: 'none',
-              borderRadius: '4px',
-              cursor: 'pointer',
-              fontWeight: 'bold',
-              fontSize: '16px'
+              background: "#2c7be5",
+              color: "white",
+              border: "none",
+              padding: "10px 18px",
+              borderRadius: "8px",
+              cursor: "pointer",
+              fontWeight: "bold",
+              fontSize: "14px",
+              transition: "transform 0.15s",
             }}
+            onMouseEnter={hoverIn}
+            onMouseLeave={hoverOut}
           >
-            📅 Skapa påminnelse
+            Skapa påminnelse
           </button>
         </form>
       </section>
 
-      {/* Lista över påminnelser */}
-      <section style={{ backgroundColor: 'white', padding: '20px', borderRadius: '8px', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }}>
-        <h2>Mina påminnelser ({reminders.length})</h2>
+      {/* Reminder list */}
+      <section
+        style={{
+          background: "white",
+          padding: "25px",
+          borderRadius: "12px",
+          boxShadow: "0 3px 8px rgba(0,0,0,0.05)",
+        }}
+      >
+        <h3 style={{ marginTop: 0 }}>Mina påminnelser ({reminders.length})</h3>
 
         {reminders.length === 0 ? (
-          <p style={{ color: '#666' }}>Inga påminnelser än. Skapa en ovan!</p>
+          <p style={{ color: "#777" }}>Inga påminnelser än. Skapa en ovan!</p>
         ) : (
-          <div style={{ display: 'grid', gap: '15px' }}>
+          <div style={{ display: "grid", gap: "15px" }}>
             {reminders.map((reminder) => (
               <div
                 key={reminder.id}
                 style={{
-                  padding: '15px',
-                  backgroundColor: reminder.is_sent ? '#f0f0f0' : isUpcoming(reminder.remind_date) ? '#e3f2fd' : '#fff3cd',
-                  borderRadius: '8px',
-                  border: '1px solid #ddd'
+                  padding: "20px",
+                  background: reminder.is_sent
+                    ? "#f4f6f8"
+                    : isUpcoming(reminder.remind_date)
+                      ? "#eef5ff"
+                      : "#fff8e1",
+                  borderRadius: "12px",
+                  transition: "all 0.2s ease",
                 }}
               >
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', marginBottom: '10px' }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "start", marginBottom: "10px" }}>
                   <div>
-                    <h3 style={{ margin: '0 0 5px 0' }}>
-                      {reminder.is_sent ? '✅' : isUpcoming(reminder.remind_date) ? '⏰' : '⚠️'} {reminder.title}
-                    </h3>
-                    <p style={{ margin: '0', fontSize: '14px', color: '#666' }}>
-                      📅 {formatDate(reminder.remind_date)}
+                    <h4 style={{ margin: "0 0 5px 0" }}>
+                      {reminder.title}
+                    </h4>
+                    <p style={{ margin: 0, fontSize: "14px", color: "#777" }}>
+                      {formatDate(reminder.remind_date)}
                     </p>
                   </div>
 
-                  <div style={{ display: 'flex', gap: '5px' }}>
+                  <div style={{ display: "flex", gap: "8px" }}>
                     {!reminder.is_sent && (
                       <button
                         onClick={() => handleMarkSent(reminder.id)}
                         style={{
-                          padding: '5px 10px',
-                          backgroundColor: '#2196F3',
-                          color: 'white',
-                          border: 'none',
-                          borderRadius: '4px',
-                          cursor: 'pointer',
-                          fontSize: '12px'
+                          ...{
+                            background: "#2c7be5",
+                            color: "white",
+                            border: "none",
+                            padding: "6px 12px",
+                            borderRadius: "8px",
+                            cursor: "pointer",
+                            fontWeight: "600",
+                            fontSize: "12px",
+                            transition: "transform 0.15s",
+                          },
                         }}
+                        onMouseEnter={hoverIn}
+                        onMouseLeave={hoverOut}
                       >
                         Markera som skickad
                       </button>
@@ -249,14 +316,18 @@ function Reminders() {
                     <button
                       onClick={() => handleDelete(reminder.id)}
                       style={{
-                        padding: '5px 10px',
-                        backgroundColor: '#f44336',
-                        color: 'white',
-                        border: 'none',
-                        borderRadius: '4px',
-                        cursor: 'pointer',
-                        fontSize: '12px'
+                        background: "#e74c3c",
+                        color: "white",
+                        border: "none",
+                        padding: "6px 12px",
+                        borderRadius: "8px",
+                        cursor: "pointer",
+                        fontWeight: "600",
+                        fontSize: "12px",
+                        transition: "transform 0.15s",
                       }}
+                      onMouseEnter={hoverIn}
+                      onMouseLeave={hoverOut}
                     >
                       Ta bort
                     </button>
@@ -264,14 +335,14 @@ function Reminders() {
                 </div>
 
                 {reminder.description && (
-                  <p style={{ margin: '10px 0 0 0', color: '#555' }}>
+                  <p style={{ margin: "10px 0 0 0", color: "#666", fontSize: "14px" }}>
                     {reminder.description}
                   </p>
                 )}
 
                 {reminder.is_sent && (
-                  <p style={{ margin: '10px 0 0 0', fontSize: '12px', color: '#4CAF50', fontWeight: 'bold' }}>
-                    ✅ Email skickat!
+                  <p style={{ margin: "10px 0 0 0", fontSize: "12px", color: "#2c7be5", fontWeight: "bold" }}>
+                    Email skickat!
                   </p>
                 )}
               </div>

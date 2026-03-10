@@ -62,28 +62,53 @@ function ContactList() {
     setShowForm(false);
   };
 
-  if (loading) return <div style={{ padding: '20px' }}>Laddar kontakter...</div>;
-  if (error) return <div style={{ padding: '20px', color: 'red' }}>{error}</div>;
+  if (loading) return (
+    <div style={{ padding: "40px", background: "#f4f6f8", minHeight: "100vh" }}>
+      Laddar kontakter...
+    </div>
+  );
+
+  if (error) return (
+    <div style={{ padding: "40px", background: "#f4f6f8", minHeight: "100vh", color: "#e74c3c" }}>
+      {error}
+    </div>
+  );
 
   return (
-    <div style={{ padding: '20px', maxWidth: '1200px', margin: '0 auto' }}>
-      <h1>Mina Kontakter</h1>
-      
-      <button
-        onClick={() => setShowForm(!showForm)}
+    <div style={{ padding: "40px", background: "#f4f6f8", minHeight: "100vh" }}>
+
+      <div
         style={{
-          padding: '10px 20px',
-          backgroundColor: '#4CAF50',
-          color: 'white',
-          border: 'none',
-          borderRadius: '4px',
-          cursor: 'pointer',
-          marginBottom: '20px',
-          fontWeight: 'bold'
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          marginBottom: "30px",
         }}
       >
-        {showForm ? 'Dölj Formulär' : '+ Skapa Ny Kontakt'}
-      </button>
+        <h2 style={{ margin: 0 }}>Mina Kontakter</h2>
+
+        <button
+          onClick={() => setShowForm(!showForm)}
+          style={{
+            background: "#2c7be5",
+            color: "white",
+            border: "none",
+            padding: "10px 18px",
+            borderRadius: "8px",
+            cursor: "pointer",
+            fontWeight: "bold",
+            transition: "transform 0.15s",
+          }}
+          onMouseEnter={(e) =>
+            (e.currentTarget.style.transform = "scale(1.05)")
+          }
+          onMouseLeave={(e) =>
+            (e.currentTarget.style.transform = "scale(1)")
+          }
+        >
+          {showForm ? 'Dölj Formulär' : '+ Skapa Ny Kontakt'}
+        </button>
+      </div>
 
       {showForm && (
         <ContactForm
@@ -93,54 +118,107 @@ function ContactList() {
           onCancel={handleCancel}
         />
       )}
-      
+
       {contacts.length === 0 ? (
-        <p>Inga kontakter än. Skapa din första!</p>
+        <div
+          style={{
+            background: "white",
+            padding: "25px",
+            borderRadius: "12px",
+            boxShadow: "0 3px 8px rgba(0,0,0,0.05)",
+            textAlign: "center",
+            color: "#777",
+          }}
+        >
+          Inga kontakter än. Skapa din första!
+        </div>
       ) : (
-        <div style={{ display: 'grid', gap: '15px' }}>
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fill, 280px)",
+            gap: "20px",
+          }}
+        >
           {contacts.map(contact => (
-            <div 
-              key={contact.id} 
+            <div
+              key={contact.id}
               style={{
-                border: '1px solid #ddd',
-                borderRadius: '8px',
-                padding: '15px',
-                backgroundColor: '#f9f9f9'
+                background: "white",
+                padding: "20px",
+                borderRadius: "12px",
+                boxShadow: "0 4px 10px rgba(0,0,0,0.05)",
+                transition: "all 0.2s ease",
+                cursor: "pointer",
               }}
+              onMouseEnter={(e) =>
+                (e.currentTarget.style.transform = "translateY(-4px)")
+              }
+              onMouseLeave={(e) =>
+                (e.currentTarget.style.transform = "translateY(0)")
+              }
             >
-              <h3>{contact.name}</h3>
-              <p><strong>Företag:</strong> {contact.company || 'Ej angivet'}</p>
-              <p><strong>Roll:</strong> {contact.role || 'Ej angivet'}</p>
-              <p><strong>Email:</strong> {contact.email || 'Ej angivet'}</p>
-              <p><strong>Telefon:</strong> {contact.phone || 'Ej angivet'}</p>
+              <h3 style={{ marginTop: 0 }}>{contact.name}</h3>
+              <p style={{ fontSize: "14px", color: "#666", margin: "6px 0" }}>
+                <strong>Företag:</strong> {contact.company || 'Ej angivet'}
+              </p>
+              <p style={{ fontSize: "14px", color: "#666", margin: "6px 0" }}>
+                <strong>Roll:</strong> {contact.role || 'Ej angivet'}
+              </p>
+              <p style={{ fontSize: "14px", color: "#666", margin: "6px 0" }}>
+                <strong>Email:</strong> {contact.email || 'Ej angivet'}
+              </p>
+              <p style={{ fontSize: "14px", color: "#666", margin: "6px 0" }}>
+                <strong>Telefon:</strong> {contact.phone || 'Ej angivet'}
+              </p>
               {contact.notes && (
-                <p><strong>Anteckningar:</strong> {contact.notes}</p>
+                <p style={{ fontSize: "14px", color: "#666", margin: "6px 0" }}>
+                  <strong>Anteckningar:</strong> {contact.notes}
+                </p>
               )}
-              
-              <div style={{ marginTop: '10px', display: 'flex', gap: '10px' }}>
-                <button 
+
+              <div style={{ display: "flex", gap: "10px", marginTop: "15px" }}>
+                <button
                   onClick={() => handleEdit(contact)}
                   style={{
-                    padding: '8px 16px',
-                    backgroundColor: '#2196F3',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '4px',
-                    cursor: 'pointer'
+                    background: "#2c7be5",
+                    color: "white",
+                    border: "none",
+                    padding: "8px 14px",
+                    borderRadius: "8px",
+                    cursor: "pointer",
+                    fontWeight: "600",
+                    fontSize: "13px",
+                    transition: "transform 0.15s",
                   }}
+                  onMouseEnter={(e) =>
+                    (e.currentTarget.style.transform = "scale(1.05)")
+                  }
+                  onMouseLeave={(e) =>
+                    (e.currentTarget.style.transform = "scale(1)")
+                  }
                 >
                   Redigera
                 </button>
-                <button 
+                <button
                   onClick={() => handleDelete(contact.id)}
                   style={{
-                    padding: '8px 16px',
-                    backgroundColor: '#f44336',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '4px',
-                    cursor: 'pointer'
+                    background: "#e74c3c",
+                    color: "white",
+                    border: "none",
+                    padding: "8px 14px",
+                    borderRadius: "8px",
+                    cursor: "pointer",
+                    fontWeight: "600",
+                    fontSize: "13px",
+                    transition: "transform 0.15s",
                   }}
+                  onMouseEnter={(e) =>
+                    (e.currentTarget.style.transform = "scale(1.05)")
+                  }
+                  onMouseLeave={(e) =>
+                    (e.currentTarget.style.transform = "scale(1)")
+                  }
                 >
                   Ta bort
                 </button>

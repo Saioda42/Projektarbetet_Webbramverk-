@@ -1,5 +1,3 @@
-// frontend/src/components/Register.jsx
-
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import api from "../services/api";
@@ -16,13 +14,11 @@ function Register({ onLogin }) {
     e.preventDefault();
     setError("");
 
-    // Validera att lösenorden matchar
     if (password !== confirmPassword) {
       setError("Lösenorden matchar inte");
       return;
     }
 
-    // Validera lösenordslängd
     if (password.length < 6) {
       setError("Lösenordet måste vara minst 6 tecken");
       return;
@@ -31,24 +27,18 @@ function Register({ onLogin }) {
     setLoading(true);
 
     try {
-      // Skicka register request till backend
       const response = await api.post("/auth/register", {
         email,
         password
       });
 
-      // Spara token (backend ger token direkt vid registrering)
       localStorage.setItem("token", response.data.access_token);
-      
-      // Uppdatera state
       onLogin();
-      
-      // Gå till dashboard
       navigate("/");
     } catch (err) {
       console.error("Register error:", err);
       setError(
-        err.response?.data?.detail || 
+        err.response?.data?.detail ||
         "Kunde inte skapa konto. Email kanske redan finns."
       );
     } finally {
@@ -63,33 +53,35 @@ function Register({ onLogin }) {
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        backgroundColor: "#f5f7fa"
+        background: "#f4f6f8",
       }}
     >
       <form
         onSubmit={handleRegister}
         style={{
-          backgroundColor: "white",
+          background: "white",
           padding: "40px",
           borderRadius: "12px",
-          boxShadow: "0 10px 25px rgba(0,0,0,0.08)",
-          width: "350px"
+          boxShadow: "0 3px 8px rgba(0,0,0,0.05)",
+          width: "380px",
         }}
       >
-        <h2 style={{ marginBottom: "20px", textAlign: "center" }}>
+        <h2 style={{ marginBottom: "25px", textAlign: "center" }}>
           Skapa konto
         </h2>
 
         {error && (
-          <div style={{
-            backgroundColor: "#ffebee",
-            color: "#c62828",
-            padding: "10px",
-            borderRadius: "4px",
-            marginBottom: "15px",
-            textAlign: "center",
-            fontSize: "14px"
-          }}>
+          <div
+            style={{
+              backgroundColor: "#ffebee",
+              color: "#e74c3c",
+              padding: "12px",
+              borderRadius: "8px",
+              marginBottom: "20px",
+              textAlign: "center",
+              fontSize: "14px",
+            }}
+          >
             {error}
           </div>
         )}
@@ -100,14 +92,7 @@ function Register({ onLogin }) {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
-          style={{
-            width: "100%",
-            padding: "12px",
-            marginBottom: "15px",
-            border: "1px solid #ddd",
-            borderRadius: "6px",
-            fontSize: "16px"
-          }}
+          style={inputStyle}
         />
 
         <input
@@ -117,14 +102,7 @@ function Register({ onLogin }) {
           onChange={(e) => setPassword(e.target.value)}
           required
           minLength={6}
-          style={{
-            width: "100%",
-            padding: "12px",
-            marginBottom: "15px",
-            border: "1px solid #ddd",
-            borderRadius: "6px",
-            fontSize: "16px"
-          }}
+          style={inputStyle}
         />
 
         <input
@@ -133,14 +111,7 @@ function Register({ onLogin }) {
           value={confirmPassword}
           onChange={(e) => setConfirmPassword(e.target.value)}
           required
-          style={{
-            width: "100%",
-            padding: "12px",
-            marginBottom: "20px",
-            border: "1px solid #ddd",
-            borderRadius: "6px",
-            fontSize: "16px"
-          }}
+          style={{ ...inputStyle, marginBottom: "20px" }}
         />
 
         <button
@@ -148,32 +119,42 @@ function Register({ onLogin }) {
           disabled={loading}
           style={{
             width: "100%",
-            padding: "12px",
-            backgroundColor: loading ? "#ccc" : "#4CAF50",
+            padding: "10px",
+            background: loading ? "#ccc" : "#2c7be5",
             border: "none",
             color: "white",
             fontWeight: "bold",
             cursor: loading ? "not-allowed" : "pointer",
-            borderRadius: "6px",
-            fontSize: "16px",
-            marginBottom: "15px"
+            borderRadius: "8px",
+            fontSize: "14px",
+            transition: "transform 0.15s",
+            marginBottom: "15px",
+          }}
+          onMouseEnter={(e) => {
+            if (!loading) e.currentTarget.style.transform = "scale(1.05)";
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.transform = "scale(1)";
           }}
         >
           {loading ? "Skapar konto..." : "Skapa konto"}
         </button>
 
-        <p style={{ 
-          textAlign: "center",
-          color: "#666",
-          fontSize: "14px"
-        }}>
+        <p
+          style={{
+            textAlign: "center",
+            color: "#777",
+            fontSize: "14px",
+            margin: 0,
+          }}
+        >
           Har du redan ett konto?{" "}
-          <Link 
-            to="/login" 
-            style={{ 
-              color: "#3498db", 
+          <Link
+            to="/login"
+            style={{
+              color: "#2c7be5",
               textDecoration: "none",
-              fontWeight: "bold"
+              fontWeight: "bold",
             }}
           >
             Logga in här
@@ -183,5 +164,15 @@ function Register({ onLogin }) {
     </div>
   );
 }
+
+const inputStyle = {
+  width: "100%",
+  padding: "10px",
+  marginBottom: "15px",
+  border: "1px solid #ccc",
+  borderRadius: "6px",
+  fontSize: "14px",
+  boxSizing: "border-box",
+};
 
 export default Register;

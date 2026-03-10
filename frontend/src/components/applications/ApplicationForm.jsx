@@ -15,33 +15,23 @@ export default function ApplicationForm() {
   });
 
   const handleChange = (e) => {
-
     setFormData({
       ...formData,
       [e.target.name]: e.target.value
     });
-
   };
 
   const handleSubmit = async (e) => {
-
     e.preventDefault();
-
     try {
-
       await api.post("/applications/", formData);
       navigate("/");
-
     } catch (error) {
-
       console.error("Failed to create application:", error);
-
     }
-
   };
 
   return (
-
     <div
       style={{
         display: "flex",
@@ -51,7 +41,6 @@ export default function ApplicationForm() {
         minHeight: "100vh"
       }}
     >
-
       <form
         onSubmit={handleSubmit}
         style={{
@@ -59,13 +48,13 @@ export default function ApplicationForm() {
           background: "white",
           padding: "30px",
           borderRadius: "12px",
-          boxShadow: "0 5px 12px rgba(0,0,0,0.05)",
+          boxShadow: "0 3px 8px rgba(0,0,0,0.05)",
           display: "flex",
           flexDirection: "column",
-          gap: "15px"
+          gap: "15px",
+          height: "fit-content",
         }}
       >
-
         <h2 style={{ marginTop: 0 }}>
           Add Application
         </h2>
@@ -114,7 +103,8 @@ export default function ApplicationForm() {
           onChange={handleChange}
           style={{
             ...inputStyle,
-            minHeight: "80px"
+            minHeight: "80px",
+            fontFamily: "inherit",
           }}
         />
 
@@ -127,23 +117,27 @@ export default function ApplicationForm() {
             padding: "10px",
             borderRadius: "8px",
             fontWeight: "bold",
-            cursor: "pointer"
+            cursor: "pointer",
+            fontSize: "14px",
+            transition: "transform 0.15s",
           }}
+          onMouseEnter={(e) =>
+            (e.currentTarget.style.transform = "scale(1.05)")
+          }
+          onMouseLeave={(e) =>
+            (e.currentTarget.style.transform = "scale(1)")
+          }
         >
           Add Application
         </button>
-
       </form>
-
     </div>
-
   );
-
 }
 
 const inputStyle = {
   padding: "10px",
   borderRadius: "6px",
   border: "1px solid #ccc",
-  fontSize: "14px"
+  fontSize: "14px",
 };
