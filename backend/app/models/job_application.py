@@ -1,4 +1,5 @@
 from sqlalchemy import Column, Integer, String, Date, Text, ForeignKey
+from sqlalchemy.orm import relationship
 from app.database import Base
 from datetime import date
 
@@ -26,6 +27,9 @@ class JobApplication(Base):
 
     source = Column(String(255), nullable=True)
     notes = Column(Text, nullable=True)
+    
+    # Relation till Reminders
+    reminders = relationship("Reminder", back_populates="application", cascade="all, delete-orphan")
 
     # NYTT
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
