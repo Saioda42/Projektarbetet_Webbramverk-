@@ -14,7 +14,6 @@ import {
   Pie,
   Cell,
   Tooltip,
-  Legend,
   ResponsiveContainer
 } from "recharts";
 
@@ -32,6 +31,7 @@ export default function Dashboard() {
   const [applications, setApplications] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState("all");
+  const [selectedApplication, setSelectedApplication] = useState(null);
 
   const [stats, setStats] = useState({
     total: 0,
@@ -43,6 +43,18 @@ export default function Dashboard() {
 
   useEffect(() => {
     loadData();
+  }, []);
+
+  // ESC close modal
+  useEffect(() => {
+    const handleEsc = (e) => {
+      if (e.key === "Escape") {
+        setSelectedApplication(null);
+      }
+    };
+
+    window.addEventListener("keydown", handleEsc);
+    return () => window.removeEventListener("keydown", handleEsc);
   }, []);
 
   const loadData = async () => {
@@ -122,19 +134,21 @@ export default function Dashboard() {
     "#10b981",
     "#ef4444"
   ];
-const statusBorder = {
-  applied: "border-l-4 border-blue-500 bg-blue-50/30",
-  interview: "border-l-4 border-yellow-500 bg-yellow-50/30",
-  offer: "border-l-4 border-green-500 bg-green-50/30",
-  rejected: "border-l-4 border-red-500 bg-red-50/30"
-};
+
+  const statusBorder = {
+    applied: "border-l-4 border-blue-500",
+    interview: "border-l-4 border-yellow-500",
+    offer: "border-l-4 border-green-500",
+    rejected: "border-l-4 border-red-500"
+  };
 
   return (
 
     <div className="p-10 bg-[#f4f6f8] min-h-screen">
+
       <div className="max-w-7xl mx-auto">
 
-      {/* Header */}
+      {/* HEADER */}
 
       <div className="flex justify-between items-center mb-8">
 
@@ -151,123 +165,70 @@ const statusBorder = {
 
       </div>
 
-      {/* Stats */}
+      {/* STATS */}
 
       <div className="grid grid-cols-5 gap-6 mb-8">
 
-        <StatCard
-          title="Totalt"
-          value={stats.total}
-          icon={<Briefcase size={26} />}
-          color="text-gray-700"
-        />
-
-        <StatCard
-          title="Ansökt"
-          value={stats.applied}
-          icon={<Send size={26} />}
-          color="text-blue-600"
-        />
-
-        <StatCard
-          title="Intervju"
-          value={stats.interview}
-          icon={<Users size={26} />}
-          color="text-yellow-600"
-        />
-
-        <StatCard
-          title="Erbjudande"
-          value={stats.offer}
-          icon={<Briefcase size={26} />}
-          color="text-green-600"
-        />
-
-        <StatCard
-          title="Avslag"
-          value={stats.rejected}
-          icon={<XCircle size={26} />}
-          color="text-red-600"
-        />
+        <StatCard title="Totalt" value={stats.total} icon={<Briefcase size={26}/>} />
+        <StatCard title="Ansökt" value={stats.applied} icon={<Send size={26}/>} />
+        <StatCard title="Intervju" value={stats.interview} icon={<Users size={26}/>} />
+        <StatCard title="Erbjudande" value={stats.offer} icon={<Briefcase size={26}/>} />
+        <StatCard title="Avslag" value={stats.rejected} icon={<XCircle size={26}/>} />
 
       </div>
 
-      {/* Pipeline */}
+      {/* PIPELINE */}
 
-      <div className="bg-white p-4 rounded-xl shadow mb-10">
+      <div className="bg-white/80 backdrop-blur-sm p-4 rounded-xl shadow mb-10 border border-gray-100">
 
-        <div className="flex flex-wrap items-center justify-center gap-6 text-center">
+        <div className="flex items-center justify-center gap-8 text-center">
 
-          <div>
-            <p className="text-xs text-gray-500">Ansökt</p>
-            <p className="text-lg font-bold text-blue-600">
-              {stats.applied}
-            </p>
-          </div>
-
-          <div className="text-gray-400">→</div>
-
-          <div>
-            <p className="text-xs text-gray-500">Intervju</p>
-            <p className="text-lg font-bold text-yellow-600">
-              {stats.interview}
-            </p>
-          </div>
-
-          <div className="text-gray-400">→</div>
-
-          <div>
-            <p className="text-xs text-gray-500">Erbjudande</p>
-            <p className="text-lg font-bold text-green-600">
-              {stats.offer}
-            </p>
-          </div>
+          <PipelineStep label="Ansökt" value={stats.applied} color="text-blue-600"/>
+          <span className="text-gray-400">→</span>
+          <PipelineStep label="Intervju" value={stats.interview} color="text-yellow-600"/>
+          <span className="text-gray-400">→</span>
+          <PipelineStep label="Erbjudande" value={stats.offer} color="text-green-600"/>
 
         </div>
 
       </div>
 
-      {/* Main grid */}
+      {/* MAIN GRID */}
 
       <div className="grid grid-cols-1 lg:grid-cols-[380px_1fr] gap-8 items-start">
 
-        {/* Chart */}
+      {/* CHART */}
 
-        <div className="bg-white p-6 rounded-xl shadow flex flex-col items-center">
+      <div className="bg-white p-6 rounded-xl shadow flex flex-col items-center">
 
-  <h3 className="mb-4 font-semibold">
-    Ansökningsstatus
-  </h3>
+        <h3 className="mb-4 font-semibold">
+          Ansökningsstatus
+        </h3>
 
-  <ResponsiveContainer width="100%" height={250}>
+        <ResponsiveContainer width="100%" height={250}>
 
-  <PieChart>
+          <PieChart>
 
-    <Pie
-      data={chartData}
-      dataKey="value"
-      outerRadius={90}
-      innerRadius={50}
-      label
-    >
+            <Pie
+              data={chartData}
+              dataKey="value"
+              outerRadius={90}
+              innerRadius={50}
+              label
+            >
 
-      {chartData.map((entry, index) => (
+              {chartData.map((entry, index) => (
+                <Cell key={index} fill={COLORS[index]} />
+              ))}
 
-        <Cell
-          key={index}
-          fill={COLORS[index]}
-        />
+            </Pie>
 
-      ))}
+            <Tooltip/>
 
-    </Pie>
+          </PieChart>
 
-    <Tooltip />
-
-  </PieChart>
-
-</ResponsiveContainer>
-<div className="grid grid-cols-2 gap-x-6 gap-y-2 mt-4 text-sm justify-items-center">
+        </ResponsiveContainer>
+        <div className="grid grid-cols-2 gap-x-6 gap-y-2 mt-4 text-sm justify-items-center">
 
   {chartData.map((item, index) => (
 
@@ -276,7 +237,7 @@ const statusBorder = {
       <span
         className="w-3 h-3 rounded-full"
         style={{ backgroundColor: COLORS[index] }}
-      ></span>
+      />
 
       <span className="text-gray-600">
         {item.name}
@@ -292,134 +253,148 @@ const statusBorder = {
 
 </div>
 
-        </div>
-
-        {/* Applications */}
-
-        <div>
-
-          <div className="mb-5">
-
-            <label className="mr-2">
-              Filtrera:
-            </label>
-
-            <select
-              value={filter}
-              onChange={(e) => setFilter(e.target.value)}
-              className="border rounded px-2 py-1"
-            >
-              <option value="all">Alla</option>
-              <option value="applied">Ansökt</option>
-              <option value="interview">Intervju</option>
-              <option value="offer">Erbjudande</option>
-              <option value="rejected">Avslag</option>
-            </select>
-
-          </div>
-
-          <div className="grid grid-cols-[repeat(auto-fill,260px)] gap-5">
-
-            {loading
-  ? Array.from({ length: 6 }).map((_, i) => (
-      <SkeletonCard key={i} />
-    ))
-  : filteredApplications.map(app => (
-
-                <div
-                  key={app.id}
-                  className={`bg-white p-5 rounded-xl shadow hover:shadow-xl hover:-translate-y-1 transition-all duration-200 ${statusBorder[app.status]}`}
-                >
-
-                  <h3 className="font-semibold">
-                    {app.company}
-                  </h3>
-
-                  <p>
-                    <strong>Roll:</strong> {app.role}
-                  </p>
-
-                  <p className="text-sm text-[#666]">
-                    {new Date(app.applied_date).toLocaleDateString()}
-                  </p>
-
-                  <div className="mt-2">
-                    <StatusBadge status={app.status} />
-                  </div>
-
-                  <StatusProgress status={app.status} />
-
-                  <select
-                    value={app.status}
-                    onChange={(e) =>
-                      handleStatusChange(app.id, e.target.value)
-                    }
-                    className="mt-3 w-full border rounded px-2 py-1"
-                  >
-
-                    <option value="applied">Ansökt</option>
-                    <option value="interview">Intervju</option>
-                    <option value="offer">Erbjudande</option>
-                    <option value="rejected">Avslag</option>
-
-                  </select>
-
-                  <div className="flex justify-end mt-3">
-
-                    <button
-                      onClick={() => handleDelete(app.id)}
-                      className="text-red-500 hover:text-red-700"
-                    >
-                      🗑
-                    </button>
-
-                  </div>
-
-                </div>
-
-              ))}
-
-          </div>
-
-        </div>
-
       </div>
 
-    </div>
-  ;</div>
-
-  );
-
-}
-
-/* --- Components --- */
-
-function StatCard({ title, value, icon, color }) {
-
-  return (
-
-    <div className="bg-white p-6 rounded-xl shadow-[0_4px_10px_rgba(0,0,0,0.05)] flex items-center justify-between hover:-translate-y-1 transition min-h-[90px]">
+      {/* APPLICATIONS */}
 
       <div>
 
-        <p className="text-xs text-gray-400 uppercase tracking-wide mb-1">
-          {title}
-        </p>
+        <div className="mb-5">
 
-        <p className="text-3xl font-bold">
-          {value}
-        </p>
+          <label className="mr-2">Filtrera:</label>
+
+          <select
+            value={filter}
+            onChange={(e) => setFilter(e.target.value)}
+            className="border rounded px-2 py-1"
+          >
+            <option value="all">Alla</option>
+            <option value="applied">Ansökt</option>
+            <option value="interview">Intervju</option>
+            <option value="offer">Erbjudande</option>
+            <option value="rejected">Avslag</option>
+          </select>
+
+        </div>
+
+        <div className="grid grid-cols-[repeat(auto-fill,260px)] gap-5">
+
+          {loading
+            ? Array.from({ length: 6 }).map((_, i) => <SkeletonCard key={i}/>)
+            : filteredApplications.map(app => (
+
+            <div
+              key={app.id}
+              onClick={() => setSelectedApplication(app)}
+              className={`bg-white p-5 rounded-xl shadow hover:shadow-xl hover:-translate-y-1 hover:scale-[1.02] transition-all duration-200 cursor-pointer ${statusBorder[app.status]}`}
+            >
+
+              <h3 className="font-semibold">{app.company}</h3>
+
+              <p><strong>Roll:</strong> {app.role}</p>
+
+              <p className="text-sm text-gray-500">
+                {new Date(app.applied_date).toLocaleDateString()}
+              </p>
+
+              <StatusBadge status={app.status}/>
+              <StatusProgress status={app.status}/>
+
+            </div>
+
+          ))}
+
+        </div>
 
       </div>
 
-      <div className={`${color} bg-gray-100 p-3 rounded-lg`}>
+      </div>
+
+      </div>
+
+      {/* MODAL */}
+
+      {selectedApplication && (
+
+      <div
+        onClick={() => setSelectedApplication(null)}
+        className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 animate-fadeIn"
+      >
+
+        <div
+          onClick={(e)=>e.stopPropagation()}
+          className="bg-white rounded-xl p-6 w-[400px] shadow-xl animate-modalIn"
+        >
+
+          <h2 className="text-xl font-bold mb-4">
+            {selectedApplication.company}
+          </h2>
+
+          <p><strong>Roll:</strong> {selectedApplication.role}</p>
+
+          <p><strong>Status:</strong> {selectedApplication.status}</p>
+
+          <p className="mb-2">
+            <strong>Ansökt:</strong>{" "}
+            {new Date(selectedApplication.applied_date).toLocaleDateString()}
+          </p>
+
+          {selectedApplication.source && (
+            <p><strong>Källa:</strong> {selectedApplication.source}</p>
+          )}
+
+          {selectedApplication.notes && (
+            <p className="mt-2">
+              <strong>Anteckningar:</strong> {selectedApplication.notes}
+            </p>
+          )}
+
+          <button
+            onClick={()=>setSelectedApplication(null)}
+            className="mt-4 bg-gray-200 px-4 py-2 rounded hover:bg-gray-300"
+          >
+            Stäng
+          </button>
+
+        </div>
+
+      </div>
+
+      )}
+
+    </div>
+  );
+}
+
+
+/* COMPONENTS */
+
+function StatCard({ title, value, icon }) {
+
+  return (
+    <div className="bg-white p-6 rounded-xl shadow flex items-center justify-between hover:-translate-y-1 hover:shadow-lg transition-all duration-200">
+
+      <div>
+        <p className="text-xs text-gray-400 uppercase">{title}</p>
+        <p className="text-3xl font-bold">{value}</p>
+      </div>
+
+      <div className="bg-gray-100 p-3 rounded-lg">
         {icon}
       </div>
 
     </div>
-
   );
+}
 
+function PipelineStep({label,value,color}){
+
+  return(
+    <div>
+      <p className="text-xs text-gray-500">{label}</p>
+      <p className={`text-lg font-bold ${color}`}>{value}</p>
+    </div>
+  )
 }
 
 function StatusBadge({ status }) {
@@ -443,25 +418,14 @@ function StatusBadge({ status }) {
       {labels[status]}
     </span>
   );
-
 }
 
 function StatusProgress({ status }) {
 
-  const steps = ["applied", "interview", "offer", "rejected"];
+  const steps = ["applied","interview","offer","rejected"];
 
-  const currentIndex = steps.indexOf(status);
-
-  const progress = status === "rejected"
-  ? 100
-  : ((currentIndex + 1) / steps.length) * 100;
-
-  const colors = {
-  applied: "bg-gradient-to-r from-blue-400 to-blue-600",
-  interview: "bg-gradient-to-r from-yellow-400 to-orange-500",
-  offer: "bg-gradient-to-r from-green-400 to-green-600",
-  rejected: "bg-gradient-to-r from-red-400 to-red-600"
-};
+  const index = steps.indexOf(status);
+  const progress = ((index + 1) / steps.length) * 100;
 
   return (
 
@@ -470,9 +434,9 @@ function StatusProgress({ status }) {
       <div className="w-full bg-gray-200 rounded-full h-2">
 
         <div
-  className={`h-2 rounded-full transition-all duration-300 ${colors[status]}`}
-  style={{ width: `${progress}%` }}
-/>
+          className="bg-blue-500 h-2 rounded-full transition-all duration-300"
+          style={{width:`${progress}%`}}
+        />
 
       </div>
 
@@ -482,16 +446,18 @@ function StatusProgress({ status }) {
 
 }
 
-function SkeletonCard() {
-  return (
+function SkeletonCard(){
+
+  return(
     <div className="bg-white p-5 rounded-xl shadow animate-pulse">
 
-      <div className="h-4 bg-gray-200 rounded w-2/3 mb-3"></div>
+      <div className="h-4 bg-gray-200 rounded w-2/3 mb-2"/>
 
-      <div className="h-3 bg-gray-200 rounded w-1/2 mb-4"></div>
+      <div className="h-3 bg-gray-200 rounded w-1/2 mb-2"/>
 
-      <div className="h-2 bg-gray-200 rounded w-full"></div>
+      <div className="h-3 bg-gray-200 rounded w-1/3"/>
 
     </div>
-  );
+  )
+
 }
