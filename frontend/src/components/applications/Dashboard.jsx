@@ -126,13 +126,13 @@ function Dashboard() {
 
       {/* HEADER */}
 
-      <div className="flex justify-between mb-[30px]">
+      <div className="flex justify-between mb-7.5">
 
         <h2 className="m-0">Översikt</h2>
 
         <button
           onClick={() => navigate("/applications/new")}
-          className="bg-[#2c7be5] text-white border-none px-[18px] py-2.5 rounded-lg cursor-pointer font-bold transition-transform duration-150 hover:scale-105"
+          className="bg-[#2c7be5] text-white border-none px-4.5 py-2.5 rounded-lg cursor-pointer font-bold transition-transform duration-150 hover:scale-105"
         >
           + Lägg till ansökan
         </button>
@@ -141,7 +141,7 @@ function Dashboard() {
 
       {/* STATS */}
 
-      <div className="grid grid-cols-4 gap-5 mb-[30px]">
+      <div className="grid grid-cols-4 gap-5 mb-7.5">
 
         <StatCard title="Totalt" value={stats.total} color="#2c3e50" />
         <StatCard title="Ansökt" value={stats.applied} color="#3498db" />
@@ -152,11 +152,11 @@ function Dashboard() {
 
       {/* MAIN DASHBOARD GRID */}
 
-      <div className="grid grid-cols-[360px_1fr] gap-[30px]">
+      <div className="grid grid-cols-[360px_1fr] gap-7.5">
 
         {/* CHART */}
 
-        <div className="bg-white p-[25px] rounded-xl shadow-[0_3px_8px_rgba(0,0,0,0.05)] h-fit">
+        <div className="bg-white p-6.25 rounded-xl shadow-[0_3px_8px_rgba(0,0,0,0.05)] h-fit">
 
           <h3 className="mb-5">
             Ansökningsstatus
@@ -280,9 +280,9 @@ function StatCard({ title, value, color }) {
 
   return (
 
-    <div className="bg-white p-5 rounded-xl text-center shadow-[0_3px_8px_rgba(0,0,0,0.04)] transition-transform duration-150 hover:-translate-y-[3px]">
+    <div className="bg-white p-5 rounded-xl text-center shadow-[0_3px_8px_rgba(0,0,0,0.04)] transition-transform duration-150 hover:-translate-y-0.75">
 
-      <p className="text-[#777] mb-[5px]">
+      <p className="text-[#777] mb-1.25">
         {title}
       </p>
 

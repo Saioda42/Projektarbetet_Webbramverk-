@@ -14,6 +14,7 @@ from app.routes import applications
 from app.routes.cv import router as cv_router
 from app.routes.reminder import router as reminder_router
 from app.routes.auth import router as auth_router
+from app.routes.platsbanken import router as platsbanken_router
 from app.services.reminder_scheduler import start_scheduler
 
 app = FastAPI(title="Job Application Tracker")
@@ -35,6 +36,7 @@ app.include_router(contacts_router)
 app.include_router(applications.router)
 app.include_router(cv_router)
 app.include_router(reminder_router)
+app.include_router(platsbanken_router)
 
 @app.get("/")
 def root():

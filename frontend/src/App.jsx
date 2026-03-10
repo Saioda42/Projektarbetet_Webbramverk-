@@ -14,6 +14,7 @@ import Navbar from "./components/Navbar";
 import ProtectedRoute from "./components/ProtectedRoute";
 import CVEditor from "./components/cv/CVEditor";
 import Reminders from "./components/reminders/Reminders";
+import JobSearch from "./components/platsbanken/JobSearch";
 
 export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -92,12 +93,19 @@ export default function App() {
             </ProtectedRoute>
           }
         />
-        // I Routes:
         <Route
           path="/reminders"
           element={
             <ProtectedRoute isLoggedIn={isLoggedIn}>
               <Reminders />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/platsbanken"
+          element={
+            <ProtectedRoute isLoggedIn={isLoggedIn}>
+              <JobSearch />
             </ProtectedRoute>
           }
         />

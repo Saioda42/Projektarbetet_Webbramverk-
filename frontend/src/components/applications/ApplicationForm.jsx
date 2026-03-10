@@ -35,7 +35,7 @@ export default function ApplicationForm() {
     <div className="flex justify-center p-10 bg-[#f4f6f8] min-h-screen">
       <form
         onSubmit={handleSubmit}
-        className="w-[420px] bg-white p-[30px] rounded-xl shadow-[0_3px_8px_rgba(0,0,0,0.05)] flex flex-col gap-[15px] h-fit"
+        className="w-105 bg-white p-7.5 rounded-xl shadow-[0_3px_8px_rgba(0,0,0,0.05)] flex flex-col gap-3.75 h-fit"
       >
         <h2 className="mt-0">
           Lägg till ansökan
@@ -83,7 +83,7 @@ export default function ApplicationForm() {
           placeholder="Anteckningar"
           value={formData.notes}
           onChange={handleChange}
-          className="p-2.5 rounded-md border border-[#ccc] text-sm min-h-[80px] font-[inherit]"
+          className="p-2.5 rounded-md border border-[#ccc] text-sm min-h-20 font-[inherit]"
         />
 
         <button

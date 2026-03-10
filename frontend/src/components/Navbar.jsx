@@ -5,7 +5,7 @@ function Navbar({ onLogout }) {
   return (
 
     <nav
-      className="bg-[#2c3e50] px-10 py-[18px] flex justify-between items-center text-white shadow-[0_2px_6px_rgba(0,0,0,0.1)]"
+      className="bg-[#2c3e50] px-10 py-4.5 flex justify-between items-center text-white shadow-[0_2px_6px_rgba(0,0,0,0.1)]"
     >
 
       <h1
@@ -44,6 +44,13 @@ function Navbar({ onLogout }) {
           className="text-white no-underline text-base font-medium opacity-90 hover:opacity-100 transition-opacity duration-200"
         >
           Påminnelser
+        </Link>
+
+        <Link
+          to="/platsbanken"
+          className="text-white no-underline text-base font-medium opacity-90 hover:opacity-100 transition-opacity duration-200"
+        >
+          Platsbanken
         </Link>
 
         <button
