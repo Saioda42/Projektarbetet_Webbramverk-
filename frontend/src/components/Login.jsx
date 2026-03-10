@@ -16,13 +16,16 @@ function Login({ onLogin }) {  // Lägg till onLogin prop här
 
     try {
       // Skicka login request till backend
-      const response = await api.post("/auth/login", {
-        email,
-        password
-      });
+      const params = new URLSearchParams();
 
-      // Spara token
-      localStorage.setItem("token", response.data.access_token);
+params.append("username", email);
+params.append("password", password);
+
+const response = await api.post("/auth/login", params);
+
+console.log("LOGIN RESPONSE:", response.data);
+
+localStorage.setItem("token", response.data.access_token);
       
       // Uppdatera state
       onLogin();

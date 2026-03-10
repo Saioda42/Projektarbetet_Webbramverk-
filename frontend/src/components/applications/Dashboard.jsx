@@ -1,33 +1,46 @@
+import {
+  getApplications,
+  deleteApplication,
+  getApplicationStats
+} from "../../services/applicationsApi";
+
 import { useEffect, useState } from "react";
-import { getApplications, deleteApplication } from "../../services/applicationsApi";
+import { useNavigate } from "react-router-dom";
 
 function Dashboard() {
+
+  const navigate = useNavigate();
+
   const [applications, setApplications] = useState([]);
   const [filter, setFilter] = useState("all");
   const [loading, setLoading] = useState(true);
 
-  /* =========================
-     Hämta applications
-  ========================= */
-
+  const [stats, setStats] = useState({
+  total: 0,
+  applied: 0,
+  interview: 0,
+  rejected: 0
+});
+  
   useEffect(() => {
-    const fetchApplications = async () => {
-      try {
-        const res = await getApplications();
-        setApplications(res.data);
-      } catch (err) {
-        console.error("Failed to load applications:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const fetchData = async () => {
+    try {
 
-    fetchApplications();
-  }, []);
+      const apps = await getApplications();
+      setApplications(apps);
 
-  /* =========================
-     Statistik
-  ========================= */
+      const statsData = await getApplicationStats();
+      setStats(statsData);
+
+    } catch (error) {
+      console.error("Error loading data:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchData();
+}, []);
 
   const total = applications.length;
 
@@ -42,10 +55,6 @@ function Dashboard() {
   const rejected = applications.filter(
     app => app.status?.toLowerCase() === "rejected"
   ).length;
-
-  /* =========================
-     Status helpers
-  ========================= */
 
   const normalizeStatus = (status) => {
     if (!status) return "";
@@ -67,28 +76,22 @@ function Dashboard() {
     }
   };
 
-  /* =========================
-     Filter
-  ========================= */
-
   const filteredApplications = applications.filter(
     app =>
       filter === "all" ||
       app.status?.toLowerCase() === filter
   );
 
-  /* =========================
-     Delete
-  ========================= */
-
   const handleDelete = async (id) => {
+
     const confirmDelete = window.confirm(
-      "Are you sure you want to delete this application?"
+      "Delete this application?"
     );
 
     if (!confirmDelete) return;
 
     try {
+
       await deleteApplication(id);
 
       setApplications(prev =>
@@ -96,111 +99,153 @@ function Dashboard() {
       );
 
     } catch (error) {
+
       console.error("Delete failed:", error);
+
     }
   };
-
-  /* =========================
-     Render
-  ========================= */
 
   return (
     <div
       style={{
-        padding: "30px",
-        backgroundColor: "#f5f7fa",
+        padding: "40px",
+        background: "#f4f6f8",
         minHeight: "100vh"
       }}
     >
-      <h2 style={{ marginBottom: "30px" }}>Dashboard</h2>
 
-      {/* Statistik */}
-      <div style={{ display: "flex", gap: "20px", marginBottom: "30px" }}>
-        <StatCard title="Total" value={total} color="#2c3e50" />
-        <StatCard title="Applied" value={applied} color="#3498db" />
-        <StatCard title="Interview" value={interview} color="#f39c12" />
-        <StatCard title="Rejected" value={rejected} color="#e74c3c" />
+      {/* Header */}
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          marginBottom: "30px"
+        }}
+      >
+        <h2>Dashboard</h2>
+
+        <button
+          onClick={() => navigate("/applications/new")}
+          style={{
+            background: "#2c7be5",
+            color: "white",
+            border: "none",
+            padding: "10px 16px",
+            borderRadius: "8px",
+            cursor: "pointer",
+            fontWeight: "bold"
+          }}
+        >
+          + Add Application
+        </button>
+
       </div>
 
+      {/* Statistik */}
+      {/* Statistik */}
+<div
+  style={{
+    display: "flex",
+    gap: "20px",
+    marginBottom: "30px"
+  }}
+>
+
+  <StatCard title="Total" value={stats.total} color="#2c3e50" />
+  <StatCard title="Applied" value={stats.applied} color="#3498db" />
+  <StatCard title="Interview" value={stats.interview} color="#f39c12" />
+  <StatCard title="Rejected" value={stats.rejected} color="#e74c3c" />
+
+</div>
+
       {/* Filter */}
+
       <div style={{ marginBottom: "25px" }}>
-        <label style={{ marginRight: "10px", fontWeight: "bold" }}>
+
+        <label style={{ marginRight: "10px" }}>
           Filter by status:
         </label>
+
         <select
           value={filter}
           onChange={(e) => setFilter(e.target.value)}
-          style={{ padding: "5px 10px" }}
         >
           <option value="all">All</option>
           <option value="applied">Applied</option>
           <option value="interview">Interview</option>
           <option value="rejected">Rejected</option>
         </select>
+
       </div>
 
-      {/* Loading */}
-      {loading && <p>Loading applications...</p>}
+      {loading && <p>Loading...</p>}
 
-      {/* Empty state */}
       {!loading && filteredApplications.length === 0 && (
         <div
           style={{
             padding: "20px",
-            backgroundColor: "white",
+            background: "white",
             borderRadius: "10px",
-            textAlign: "center",
-            boxShadow: "0 4px 8px rgba(0,0,0,0.05)"
+            textAlign: "center"
           }}
         >
-          <p>No applications found.</p>
+          No applications found.
         </div>
       )}
 
-      {/* Cards */}
-      <div style={{ display: "flex", flexWrap: "wrap", gap: "20px" }}>
+      <div
+        style={{
+          display: "flex",
+          flexWrap: "wrap",
+          gap: "20px"
+        }}
+      >
+
         {!loading &&
           filteredApplications.map(app => {
+
             const normalizedStatus = normalizeStatus(app.status);
 
             return (
+
               <div
                 key={app.id}
                 style={{
-                  borderRadius: "12px",
-                  padding: "20px",
                   width: "260px",
-                  backgroundColor: "white",
-                  boxShadow: "0 6px 15px rgba(0,0,0,0.08)"
+                  background: "white",
+                  padding: "20px",
+                  borderRadius: "12px",
+                  boxShadow: "0 4px 10px rgba(0,0,0,0.05)"
                 }}
               >
+
                 <h3>{app.company}</h3>
 
                 <p>
                   <strong>Role:</strong> {app.role}
                 </p>
 
-                <p style={{ color: "#666", fontSize: "14px" }}>
-                  <strong>Applied:</strong>{" "}
+                <p style={{ fontSize: "14px", color: "#666" }}>
                   {new Date(app.applied_date).toLocaleDateString()}
                 </p>
 
                 <div
                   style={{
                     display: "flex",
-                    alignItems: "center",
-                    gap: "16px",
-                    marginTop: "15px"
+                    justifyContent: "space-between",
+                    marginTop: "10px",
+                    alignItems: "center"
                   }}
                 >
+
                   <span
                     style={{
-                      padding: "6px 12px",
+                      background: getStatusColor(app.status),
+                      color: "white",
+                      padding: "5px 10px",
                       borderRadius: "20px",
-                      fontSize: "13px",
-                      fontWeight: "bold",
-                      backgroundColor: getStatusColor(app.status),
-                      color: "white"
+                      fontSize: "12px"
                     }}
                   >
                     {normalizedStatus}
@@ -209,25 +254,28 @@ function Dashboard() {
                   <button
                     onClick={() => handleDelete(app.id)}
                     style={{
-                      border: "none",
                       background: "none",
+                      border: "none",
                       cursor: "pointer",
-                      fontSize: "22px",
+                      fontSize: "18px",
                       color: "#e74c3c"
                     }}
                   >
                     🗑
                   </button>
+
                 </div>
+
               </div>
+
             );
           })}
+
       </div>
+
     </div>
   );
 }
-
-/* Statistik-card */
 
 function StatCard({ title, value, color }) {
   return (
@@ -235,14 +283,13 @@ function StatCard({ title, value, color }) {
       style={{
         flex: 1,
         padding: "20px",
-        backgroundColor: "white",
+        background: "white",
         borderRadius: "12px",
-        boxShadow: "0 6px 15px rgba(0,0,0,0.08)",
         textAlign: "center"
       }}
     >
-      <p style={{ margin: 0, color: "#777" }}>{title}</p>
-      <h2 style={{ margin: "10px 0", color }}>{value}</h2>
+      <p style={{ color: "#777" }}>{title}</p>
+      <h2 style={{ color }}>{value}</h2>
     </div>
   );
 }
