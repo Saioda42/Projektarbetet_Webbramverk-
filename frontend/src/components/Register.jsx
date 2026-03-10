@@ -50,14 +50,14 @@ function Register({ onLogin }) {
     <div className="min-h-screen flex justify-center items-center bg-[#f4f6f8]">
       <form
         onSubmit={handleRegister}
-        className="bg-white p-10 rounded-xl shadow-[0_3px_8px_rgba(0,0,0,0.05)] w-[380px]"
+        className="bg-white p-10 rounded-xl shadow w-96"
       >
-        <h2 className="mb-6 text-center">
+        <h2 className="text-xl font-bold mb-6 text-center">
           Skapa konto
         </h2>
 
         {error && (
-          <div className="bg-[#ffebee] text-[#e74c3c] p-3 rounded-lg mb-5 text-center text-sm">
+          <div className="bg-red-50 text-red-500 p-3 rounded-lg mb-5 text-center text-sm">
             {error}
           </div>
         )}
@@ -68,7 +68,7 @@ function Register({ onLogin }) {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
-          className="w-full p-2.5 mb-4 border border-[#ccc] rounded-md text-sm box-border"
+          className="w-full border rounded px-3 py-2 mb-4 text-sm"
         />
 
         <input
@@ -78,7 +78,7 @@ function Register({ onLogin }) {
           onChange={(e) => setPassword(e.target.value)}
           required
           minLength={6}
-          className="w-full p-2.5 mb-4 border border-[#ccc] rounded-md text-sm box-border"
+          className="w-full border rounded px-3 py-2 mb-4 text-sm"
         />
 
         <input
@@ -87,22 +87,22 @@ function Register({ onLogin }) {
           value={confirmPassword}
           onChange={(e) => setConfirmPassword(e.target.value)}
           required
-          className="w-full p-2.5 mb-5 border border-[#ccc] rounded-md text-sm box-border"
+          className="w-full border rounded px-3 py-2 mb-5 text-sm"
         />
 
         <button
           type="submit"
           disabled={loading}
-          className={`w-full p-2.5 border-none text-white font-bold rounded-lg text-sm transition-transform duration-150 mb-4 ${loading ? "bg-[#ccc] cursor-not-allowed" : "bg-[#2c7be5] cursor-pointer hover:scale-105"}`}
+          className={`w-full py-2.5 text-white font-bold rounded-lg text-sm hover:scale-105 transition-transform mb-4 ${loading ? "bg-gray-300 cursor-not-allowed" : "bg-blue-600 cursor-pointer"}`}
         >
           {loading ? "Skapar konto..." : "Skapa konto"}
         </button>
 
-        <p className="text-center text-[#777] text-sm m-0">
+        <p className="text-center text-gray-500 text-sm m-0">
           Har du redan ett konto?{" "}
           <Link
             to="/login"
-            className="text-[#2c7be5] no-underline font-bold"
+            className="text-blue-600 no-underline font-bold"
           >
             Logga in här
           </Link>

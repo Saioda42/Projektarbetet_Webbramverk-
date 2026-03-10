@@ -100,25 +100,26 @@ function Reminders() {
 
   return (
     <div className="p-10 bg-[#f4f6f8] min-h-screen">
+      <div className="max-w-7xl mx-auto">
 
-      <h2 className="mb-[30px]">E-postpåminnelser</h2>
+      <h2 className="text-xl font-bold mb-8">E-postpåminnelser</h2>
 
-      <div className="bg-white px-5 py-[15px] rounded-xl shadow-[0_3px_8px_rgba(0,0,0,0.05)] mb-5 text-[#2c7be5] text-sm">
+      <div className="bg-white p-4 rounded-xl shadow mb-5 text-blue-600 text-sm">
         <strong>Tips:</strong> Välj datum och tid i din lokala tidszon. Påminnelser skickas automatiskt via e-post!
       </div>
 
       {error && (
-        <div className="bg-white px-5 py-[15px] rounded-xl shadow-[0_3px_8px_rgba(0,0,0,0.05)] mb-5 text-[#e74c3c]">
+        <div className="bg-white p-4 rounded-xl shadow mb-5 text-red-500">
           {error}
         </div>
       )}
 
       {/* Create reminder form */}
-      <section className="bg-white p-6 rounded-xl shadow-[0_3px_8px_rgba(0,0,0,0.05)] mb-5">
-        <h3 className="mt-0">Skapa ny påminnelse</h3>
+      <section className="bg-white p-6 rounded-xl shadow mb-5">
+        <h3 className="font-semibold mt-0">Skapa ny påminnelse</h3>
         <form onSubmit={handleSubmit}>
-          <div className="mb-[15px]">
-            <label className="block mb-[5px] font-semibold text-sm text-[#2c3e50]">
+          <div className="mb-4">
+            <label className="block mb-1 font-semibold text-sm text-gray-700">
               Titel *
             </label>
             <input
@@ -127,12 +128,12 @@ function Reminders() {
               onChange={(e) => setFormData({ ...formData, title: e.target.value })}
               placeholder="t.ex. Följ upp ansökan till Spotify"
               required
-              className="w-full p-2.5 rounded-md border border-[#ccc] text-sm box-border"
+              className="w-full border rounded px-3 py-2 text-sm"
             />
           </div>
 
-          <div className="mb-[15px]">
-            <label className="block mb-[5px] font-semibold text-sm text-[#2c3e50]">
+          <div className="mb-4">
+            <label className="block mb-1 font-semibold text-sm text-gray-700">
               Beskrivning
             </label>
             <textarea
@@ -140,13 +141,13 @@ function Reminders() {
               onChange={(e) => setFormData({ ...formData, description: e.target.value })}
               placeholder="Vad vill du bli påmind om?"
               rows="3"
-              className="w-full p-2.5 rounded-md border border-[#ccc] text-sm font-[inherit] box-border"
+              className="w-full border rounded px-3 py-2 text-sm font-[inherit]"
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-[15px] mb-5">
+          <div className="grid grid-cols-2 gap-4 mb-5">
             <div>
-              <label className="block mb-[5px] font-semibold text-sm text-[#2c3e50]">
+              <label className="block mb-1 font-semibold text-sm text-gray-700">
                 Datum *
               </label>
               <input
@@ -154,11 +155,11 @@ function Reminders() {
                 value={formData.remind_date}
                 onChange={(e) => setFormData({ ...formData, remind_date: e.target.value })}
                 required
-                className="w-full p-2.5 rounded-md border border-[#ccc] text-sm box-border"
+                className="w-full border rounded px-3 py-2 text-sm"
               />
             </div>
             <div>
-              <label className="block mb-[5px] font-semibold text-sm text-[#2c3e50]">
+              <label className="block mb-1 font-semibold text-sm text-gray-700">
                 Tid (lokal tid) *
               </label>
               <input
@@ -166,14 +167,14 @@ function Reminders() {
                 value={formData.remind_time}
                 onChange={(e) => setFormData({ ...formData, remind_time: e.target.value })}
                 required
-                className="w-full p-2.5 rounded-md border border-[#ccc] text-sm box-border"
+                className="w-full border rounded px-3 py-2 text-sm"
               />
             </div>
           </div>
 
           <button
             type="submit"
-            className="bg-[#2c7be5] text-white border-none py-2.5 px-[18px] rounded-lg cursor-pointer font-bold text-sm hover:scale-105 transition-transform duration-150"
+            className="bg-[#2c7be5] text-white px-4 py-2 rounded-lg font-bold text-sm hover:scale-105 transition-transform"
           >
             Skapa påminnelse
           </button>
@@ -181,30 +182,30 @@ function Reminders() {
       </section>
 
       {/* Reminder list */}
-      <section className="bg-white p-6 rounded-xl shadow-[0_3px_8px_rgba(0,0,0,0.05)]">
-        <h3 className="mt-0">Mina påminnelser ({reminders.length})</h3>
+      <section className="bg-white p-6 rounded-xl shadow">
+        <h3 className="font-semibold mt-0">Mina påminnelser ({reminders.length})</h3>
 
         {reminders.length === 0 ? (
-          <p className="text-[#777]">Inga påminnelser än. Skapa en ovan!</p>
+          <p className="text-gray-500">Inga påminnelser än. Skapa en ovan!</p>
         ) : (
-          <div className="grid gap-[15px]">
+          <div className="grid gap-4">
             {reminders.map((reminder) => (
               <div
                 key={reminder.id}
-                className={`p-5 rounded-xl transition-all duration-200 ease-in-out ${
+                className={`p-5 rounded-xl transition-all duration-200 ${
                   reminder.is_sent
-                    ? "bg-[#f4f6f8]"
+                    ? "bg-gray-50"
                     : isUpcoming(reminder.remind_date)
-                      ? "bg-[#eef5ff]"
-                      : "bg-[#fff8e1]"
+                      ? "bg-blue-50/30"
+                      : "bg-yellow-50/30"
                 }`}
               >
                 <div className="flex justify-between items-start mb-2.5">
                   <div>
-                    <h4 className="m-0 mb-[5px]">
+                    <h4 className="m-0 mb-1 font-semibold">
                       {reminder.title}
                     </h4>
-                    <p className="m-0 text-sm text-[#777]">
+                    <p className="m-0 text-sm text-gray-500">
                       {formatDate(reminder.remind_date)}
                     </p>
                   </div>
@@ -213,14 +214,14 @@ function Reminders() {
                     {!reminder.is_sent && (
                       <button
                         onClick={() => handleMarkSent(reminder.id)}
-                        className="bg-[#2c7be5] text-white border-none py-1.5 px-3 rounded-lg cursor-pointer font-semibold text-xs hover:scale-105 transition-transform duration-150"
+                        className="bg-[#2c7be5] text-white py-1.5 px-3 rounded-lg font-semibold text-xs hover:scale-105 transition-transform"
                       >
                         Markera som skickad
                       </button>
                     )}
                     <button
                       onClick={() => handleDelete(reminder.id)}
-                      className="bg-[#e74c3c] text-white border-none py-1.5 px-3 rounded-lg cursor-pointer font-semibold text-xs hover:scale-105 transition-transform duration-150"
+                      className="text-red-500 hover:text-red-700 font-semibold text-xs py-1.5 px-3"
                     >
                       Ta bort
                     </button>
@@ -228,13 +229,13 @@ function Reminders() {
                 </div>
 
                 {reminder.description && (
-                  <p className="mt-2.5 mb-0 text-[#666] text-sm">
+                  <p className="mt-2.5 mb-0 text-gray-500 text-sm">
                     {reminder.description}
                   </p>
                 )}
 
                 {reminder.is_sent && (
-                  <p className="mt-2.5 mb-0 text-xs text-[#2c7be5] font-bold">
+                  <p className="mt-2.5 mb-0 text-xs text-blue-600 font-bold">
                     E-post skickat!
                   </p>
                 )}
@@ -243,6 +244,8 @@ function Reminders() {
           </div>
         )}
       </section>
+
+      </div>
     </div>
   );
 }
