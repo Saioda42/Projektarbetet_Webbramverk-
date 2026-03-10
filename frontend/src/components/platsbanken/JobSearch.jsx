@@ -19,17 +19,14 @@ function JobSearch() {
   const [expandedAd, setExpandedAd] = useState(null);
   const [loadingAd, setLoadingAd] = useState(false);
 
-  // Save states
   const [savingId, setSavingId] = useState(null);
   const [savedIds, setSavedIds] = useState(new Set());
   const [saveMessage, setSaveMessage] = useState(null);
 
-  // Reminder states
   const [showReminderForm, setShowReminderForm] = useState(null);
   const [reminderData, setReminderData] = useState({ title: '', remind_date: '', description: '' });
   const [reminderMessage, setReminderMessage] = useState(null);
 
-  // CV match states
   const [matchResult, setMatchResult] = useState(null);
   const [matchingId, setMatchingId] = useState(null);
   const [matchError, setMatchError] = useState(null);
@@ -151,34 +148,35 @@ function JobSearch() {
   };
 
   const getMatchColor = (pct) => {
-    if (pct >= 70) return '#27ae60';
-    if (pct >= 40) return '#f39c12';
-    return '#e74c3c';
+    if (pct >= 70) return 'bg-green-500';
+    if (pct >= 40) return 'bg-yellow-500';
+    return 'bg-red-500';
   };
 
   return (
     <div className="p-10 bg-[#f4f6f8] min-h-screen">
+      <div className="max-w-7xl mx-auto">
 
-      <h2 className="mb-[30px]">Jobbannonser - Platsbanken</h2>
+      <h2 className="text-xl font-bold mb-8">Jobbannonser - Platsbanken</h2>
 
       {/* Sökfält */}
-      <section className="bg-white p-6 rounded-xl shadow-[0_3px_8px_rgba(0,0,0,0.05)] mb-5">
+      <section className="bg-white p-6 rounded-xl shadow mb-5">
         <form
           onSubmit={(e) => { e.preventDefault(); handleSearch(0); }}
-          className="flex gap-2.5"
+          className="flex gap-3"
         >
           <input
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Sök jobb, t.ex. 'React utvecklare Stockholm'"
-            className="flex-1 p-2.5 rounded-md border border-[#ccc] text-sm box-border"
+            className="flex-1 border rounded px-3 py-2 text-sm"
           />
           <button
             type="submit"
             disabled={loading}
-            className={`border-none py-2.5 px-5 rounded-lg font-bold text-sm text-white transition-transform duration-150 ${
-              loading ? 'bg-[#ccc] cursor-not-allowed' : 'bg-[#2c7be5] cursor-pointer hover:scale-105'
+            className={`px-5 py-2 rounded-lg font-bold text-sm text-white transition-transform ${
+              loading ? 'bg-gray-300 cursor-not-allowed' : 'bg-[#2c7be5] cursor-pointer hover:scale-105'
             }`}
           >
             {loading ? 'Söker...' : 'Sök'}
@@ -186,14 +184,14 @@ function JobSearch() {
         </form>
 
         {total > 0 && (
-          <p className="mt-2.5 mb-0 text-sm text-[#777]">
+          <p className="mt-2 mb-0 text-sm text-gray-500">
             {total.toLocaleString()} jobb hittade
           </p>
         )}
       </section>
 
       {error && (
-        <div className="bg-white px-5 py-[15px] rounded-xl shadow-[0_3px_8px_rgba(0,0,0,0.05)] mb-5 text-[#e74c3c]">
+        <div className="bg-white p-4 rounded-xl shadow mb-5 text-red-500">
           {error}
         </div>
       )}
@@ -202,20 +200,19 @@ function JobSearch() {
       <div className="grid gap-4">
         {results.map((hit) => (
           <div key={hit.id}>
-            {/* Kort */}
             <div
               onClick={() => handleExpand(hit.id)}
-              className={`bg-white p-5 rounded-xl shadow-[0_3px_8px_rgba(0,0,0,0.05)] cursor-pointer hover:-translate-y-0.5 transition-all duration-200 ${
-                expandedId === hit.id ? 'ring-2 ring-[#2c7be5]' : ''
+              className={`bg-white p-5 rounded-xl shadow cursor-pointer hover:shadow-xl hover:-translate-y-0.5 transition-all duration-200 ${
+                expandedId === hit.id ? 'ring-2 ring-blue-500' : ''
               }`}
             >
               <div className="flex justify-between items-start">
                 <div className="flex-1">
-                  <h3 className="m-0 mb-1 text-lg">{hit.headline}</h3>
-                  <p className="m-0 text-[#2c7be5] font-semibold text-sm">
+                  <h3 className="m-0 mb-1 font-semibold text-lg">{hit.headline}</h3>
+                  <p className="m-0 text-blue-600 font-semibold text-sm">
                     {hit.employer?.name || 'Okänt företag'}
                   </p>
-                  <div className="flex flex-wrap gap-3 mt-2 text-xs text-[#777]">
+                  <div className="flex flex-wrap gap-3 mt-2 text-xs text-gray-500">
                     {hit.workplace_address?.municipality && (
                       <span>{hit.workplace_address.municipality}</span>
                     )}
@@ -231,20 +228,20 @@ function JobSearch() {
                   </div>
                 </div>
                 {savedIds.has(hit.id) && (
-                  <span className="text-xs font-bold text-[#27ae60] whitespace-nowrap ml-2">
+                  <span className="text-xs font-bold text-green-600 whitespace-nowrap ml-2">
                     Sparad
                   </span>
                 )}
               </div>
 
               {hit.description?.text && (
-                <p className="mt-2.5 mb-0 text-sm text-[#666] leading-relaxed">
+                <p className="mt-2.5 mb-0 text-sm text-gray-500 leading-relaxed">
                   {hit.description.text.slice(0, 200)}...
                 </p>
               )}
 
               {hit.last_publication_date && (
-                <p className="mt-2 mb-0 text-xs text-[#f39c12] font-semibold">
+                <p className="mt-2 mb-0 text-xs text-yellow-600 font-semibold">
                   Sista ansökningsdag: {formatDate(hit.last_publication_date)}
                 </p>
               )}
@@ -252,29 +249,24 @@ function JobSearch() {
 
             {/* Expanderad vy */}
             {expandedId === hit.id && (
-              <div className="bg-white p-6 rounded-b-xl shadow-[0_3px_8px_rgba(0,0,0,0.05)] border-t border-[#eee] -mt-1">
+              <div className="bg-white p-6 rounded-b-xl shadow border-t -mt-1">
                 {loadingAd ? (
-                  <p className="text-[#777]">Laddar annons...</p>
+                  <p className="text-gray-500">Laddar annons...</p>
                 ) : expandedAd ? (
                   <>
-                    {/* Full beskrivning */}
                     <div className="mb-5">
-                      <h4 className="mt-0 mb-2 text-[#2c3e50]">Beskrivning</h4>
-                      <p className="text-sm text-[#666] leading-relaxed whitespace-pre-line">
+                      <h4 className="mt-0 mb-2 font-semibold text-gray-700">Beskrivning</h4>
+                      <p className="text-sm text-gray-500 leading-relaxed whitespace-pre-line">
                         {expandedAd.description?.text || 'Ingen beskrivning tillgänglig.'}
                       </p>
                     </div>
 
-                    {/* Krav - must have */}
                     {expandedAd.must_have?.skills?.length > 0 && (
                       <div className="mb-4">
-                        <h4 className="mt-0 mb-2 text-[#2c3e50]">Krav</h4>
+                        <h4 className="mt-0 mb-2 font-semibold text-gray-700">Krav</h4>
                         <div className="flex flex-wrap gap-2">
                           {expandedAd.must_have.skills.map((s, i) => (
-                            <span
-                              key={i}
-                              className="px-3 py-1.5 bg-[#2c7be5] text-white rounded-full text-xs font-medium"
-                            >
+                            <span key={i} className="px-3 py-1.5 bg-blue-600 text-white rounded-full text-xs font-medium">
                               {s.label}
                             </span>
                           ))}
@@ -282,16 +274,12 @@ function JobSearch() {
                       </div>
                     )}
 
-                    {/* Meriterande - nice to have */}
                     {expandedAd.nice_to_have?.skills?.length > 0 && (
                       <div className="mb-4">
-                        <h4 className="mt-0 mb-2 text-[#2c3e50]">Meriterande</h4>
+                        <h4 className="mt-0 mb-2 font-semibold text-gray-700">Meriterande</h4>
                         <div className="flex flex-wrap gap-2">
                           {expandedAd.nice_to_have.skills.map((s, i) => (
-                            <span
-                              key={i}
-                              className="px-3 py-1.5 bg-[#f39c12] text-white rounded-full text-xs font-medium"
-                            >
+                            <span key={i} className="px-3 py-1.5 bg-yellow-500 text-white rounded-full text-xs font-medium">
                               {s.label}
                             </span>
                           ))}
@@ -299,48 +287,45 @@ function JobSearch() {
                       </div>
                     )}
 
-                    {/* Kontaktinfo */}
                     {expandedAd.application_details?.email && (
-                      <p className="text-sm text-[#666] mb-4">
+                      <p className="text-sm text-gray-500 mb-4">
                         <strong>Kontakt:</strong> {expandedAd.application_details.email}
                       </p>
                     )}
 
-                    {/* Ansökningslänk */}
                     {expandedAd.application_details?.url && (
                       <a
                         href={expandedAd.application_details.url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-block mb-5 text-[#2c7be5] font-semibold text-sm hover:underline"
+                        className="inline-block mb-5 text-blue-600 font-semibold text-sm hover:underline"
                       >
                         Öppna ansökningslänk &rarr;
                       </a>
                     )}
 
-                    {/* Åtgärdsknappar */}
-                    <div className="flex flex-wrap gap-2.5 pt-4 border-t border-[#eee]">
+                    <div className="flex flex-wrap gap-2.5 pt-4 border-t">
                       {!savedIds.has(hit.id) ? (
                         <button
                           onClick={(e) => { e.stopPropagation(); handleSave(hit); }}
                           disabled={savingId === hit.id}
-                          className={`border-none py-2 px-4 rounded-lg font-bold text-sm text-white transition-transform duration-150 ${
+                          className={`py-2 px-4 rounded-lg font-bold text-sm text-white transition-transform ${
                             savingId === hit.id
-                              ? 'bg-[#ccc] cursor-not-allowed'
-                              : 'bg-[#27ae60] cursor-pointer hover:scale-105'
+                              ? 'bg-gray-300 cursor-not-allowed'
+                              : 'bg-green-500 cursor-pointer hover:scale-105'
                           }`}
                         >
                           {savingId === hit.id ? 'Sparar...' : 'Spara som ansökan'}
                         </button>
                       ) : (
-                        <span className="py-2 px-4 text-[#27ae60] font-bold text-sm">
-                          Sparad! <Link to="/" className="text-[#2c7be5] ml-1">Visa i Översikt</Link>
+                        <span className="py-2 px-4 text-green-600 font-bold text-sm">
+                          Sparad! <Link to="/" className="text-blue-600 ml-1">Visa i Översikt</Link>
                         </span>
                       )}
 
                       <button
                         onClick={(e) => { e.stopPropagation(); handleOpenReminder(hit); }}
-                        className="bg-[#2c7be5] text-white border-none py-2 px-4 rounded-lg font-bold text-sm cursor-pointer hover:scale-105 transition-transform duration-150"
+                        className="bg-[#2c7be5] text-white py-2 px-4 rounded-lg font-bold text-sm hover:scale-105 transition-transform"
                       >
                         Skapa påminnelse
                       </button>
@@ -348,66 +333,64 @@ function JobSearch() {
                       <button
                         onClick={(e) => { e.stopPropagation(); handleMatch(hit.id); }}
                         disabled={matchingId === hit.id}
-                        className={`border-none py-2 px-4 rounded-lg font-bold text-sm text-white transition-transform duration-150 ${
+                        className={`py-2 px-4 rounded-lg font-bold text-sm text-white transition-transform ${
                           matchingId === hit.id
-                            ? 'bg-[#ccc] cursor-not-allowed'
-                            : 'bg-[#8e44ad] cursor-pointer hover:scale-105'
+                            ? 'bg-gray-300 cursor-not-allowed'
+                            : 'bg-purple-600 cursor-pointer hover:scale-105'
                         }`}
                       >
                         {matchingId === hit.id ? 'Matchar...' : 'Matcha mot mitt CV'}
                       </button>
                     </div>
 
-                    {/* Spara-meddelande */}
                     {saveMessage?.id === hit.id && (
                       <p className={`mt-2.5 mb-0 text-sm font-semibold ${
-                        saveMessage.type === 'success' ? 'text-[#27ae60]' : 'text-[#e74c3c]'
+                        saveMessage.type === 'success' ? 'text-green-600' : 'text-red-500'
                       }`}>
                         {saveMessage.text}
                       </p>
                     )}
 
-                    {/* Påminnelse-formulär */}
                     {showReminderForm === hit.id && (
                       <form
                         onSubmit={handleSaveReminder}
-                        className="mt-4 p-4 bg-[#f4f6f8] rounded-lg"
+                        className="mt-4 p-4 bg-gray-50 rounded-lg"
                         onClick={(e) => e.stopPropagation()}
                       >
-                        <h4 className="mt-0 mb-2.5 text-[#2c3e50]">Ny påminnelse</h4>
+                        <h4 className="mt-0 mb-2.5 font-semibold text-gray-700">Ny påminnelse</h4>
                         <input
                           type="text"
                           value={reminderData.title}
                           onChange={(e) => setReminderData({ ...reminderData, title: e.target.value })}
                           required
                           placeholder="Titel"
-                          className="w-full p-2.5 mb-2.5 rounded-md border border-[#ccc] text-sm box-border"
+                          className="w-full border rounded px-3 py-2 mb-3 text-sm"
                         />
                         <input
                           type="datetime-local"
                           value={reminderData.remind_date}
                           onChange={(e) => setReminderData({ ...reminderData, remind_date: e.target.value })}
                           required
-                          className="w-full p-2.5 mb-2.5 rounded-md border border-[#ccc] text-sm box-border"
+                          className="w-full border rounded px-3 py-2 mb-3 text-sm"
                         />
                         <textarea
                           value={reminderData.description}
                           onChange={(e) => setReminderData({ ...reminderData, description: e.target.value })}
                           placeholder="Beskrivning (valfritt)"
                           rows="2"
-                          className="w-full p-2.5 mb-2.5 rounded-md border border-[#ccc] text-sm box-border font-[inherit]"
+                          className="w-full border rounded px-3 py-2 mb-3 text-sm font-[inherit]"
                         />
                         <div className="flex gap-2">
                           <button
                             type="submit"
-                            className="bg-[#2c7be5] text-white border-none py-2 px-4 rounded-lg font-bold text-sm cursor-pointer hover:scale-105 transition-transform duration-150"
+                            className="bg-[#2c7be5] text-white py-2 px-4 rounded-lg font-bold text-sm hover:scale-105 transition-transform"
                           >
                             Spara påminnelse
                           </button>
                           <button
                             type="button"
                             onClick={() => setShowReminderForm(null)}
-                            className="bg-[#ccc] text-[#333] border-none py-2 px-4 rounded-lg font-bold text-sm cursor-pointer hover:scale-105 transition-transform duration-150"
+                            className="bg-gray-300 text-gray-700 py-2 px-4 rounded-lg font-bold text-sm hover:scale-105 transition-transform"
                           >
                             Avbryt
                           </button>
@@ -417,40 +400,38 @@ function JobSearch() {
 
                     {reminderMessage && showReminderForm === null && (
                       <p className={`mt-2.5 mb-0 text-sm font-semibold ${
-                        reminderMessage.type === 'success' ? 'text-[#27ae60]' : 'text-[#e74c3c]'
+                        reminderMessage.type === 'success' ? 'text-green-600' : 'text-red-500'
                       }`}>
                         {reminderMessage.text}
                       </p>
                     )}
 
-                    {/* CV-matchning resultat */}
                     {matchResult && expandedId === hit.id && (
-                      <div className="mt-4 p-4 bg-[#f4f6f8] rounded-lg">
+                      <div className="mt-4 p-4 bg-gray-50 rounded-lg">
                         <div className="flex items-center gap-4 mb-3">
                           <div
-                            className="w-16 h-16 rounded-full flex items-center justify-center text-white font-bold text-lg"
-                            style={{ backgroundColor: getMatchColor(matchResult.match_percentage) }}
+                            className={`w-16 h-16 rounded-full flex items-center justify-center text-white font-bold text-lg ${getMatchColor(matchResult.match_percentage)}`}
                           >
                             {matchResult.match_percentage}%
                           </div>
                           <div>
-                            <h4 className="m-0 text-[#2c3e50]">CV-matchning</h4>
-                            <p className="m-0 text-sm text-[#777]">
+                            <h4 className="m-0 font-semibold text-gray-700">CV-matchning</h4>
+                            <p className="m-0 text-sm text-gray-500">
                               {matchResult.matched_skills.length} av {matchResult.matched_skills.length + matchResult.missing_skills.length} färdigheter matchar
                             </p>
                           </div>
                         </div>
 
                         {matchResult.message && (
-                          <p className="text-sm text-[#777] mb-2">{matchResult.message}</p>
+                          <p className="text-sm text-gray-500 mb-2">{matchResult.message}</p>
                         )}
 
                         {matchResult.matched_skills.length > 0 && (
                           <div className="mb-2.5">
-                            <p className="text-sm font-semibold text-[#2c3e50] mb-1.5">Matchade färdigheter:</p>
+                            <p className="text-sm font-semibold text-gray-700 mb-1.5">Matchade färdigheter:</p>
                             <div className="flex flex-wrap gap-1.5">
                               {matchResult.matched_skills.map((s, i) => (
-                                <span key={i} className="px-2.5 py-1 bg-[#27ae60] text-white rounded-full text-xs font-medium">
+                                <span key={i} className="px-2.5 py-1 bg-green-500 text-white rounded-full text-xs font-medium">
                                   {s}
                                 </span>
                               ))}
@@ -460,10 +441,10 @@ function JobSearch() {
 
                         {matchResult.missing_skills.length > 0 && (
                           <div>
-                            <p className="text-sm font-semibold text-[#2c3e50] mb-1.5">Saknade färdigheter:</p>
+                            <p className="text-sm font-semibold text-gray-700 mb-1.5">Saknade färdigheter:</p>
                             <div className="flex flex-wrap gap-1.5">
                               {matchResult.missing_skills.map((s, i) => (
-                                <span key={i} className="px-2.5 py-1 bg-[#e74c3c] text-white rounded-full text-xs font-medium">
+                                <span key={i} className="px-2.5 py-1 bg-red-500 text-white rounded-full text-xs font-medium">
                                   {s}
                                 </span>
                               ))}
@@ -474,13 +455,13 @@ function JobSearch() {
                     )}
 
                     {matchError && expandedId === hit.id && (
-                      <p className="mt-2.5 mb-0 text-sm text-[#e74c3c] font-semibold">
+                      <p className="mt-2.5 mb-0 text-sm text-red-500 font-semibold">
                         {matchError}
                       </p>
                     )}
                   </>
                 ) : (
-                  <p className="text-[#e74c3c]">Kunde inte ladda annonsdetaljer.</p>
+                  <p className="text-red-500">Kunde inte ladda annonsdetaljer.</p>
                 )}
               </div>
             )}
@@ -494,23 +475,23 @@ function JobSearch() {
           <button
             onClick={() => handleSearch(Math.max(0, offset - LIMIT))}
             disabled={offset === 0}
-            className={`border-none py-2.5 px-5 rounded-lg font-bold text-sm transition-transform duration-150 ${
+            className={`py-2 px-5 rounded-lg font-bold text-sm transition-transform ${
               offset === 0
-                ? 'bg-[#ccc] text-[#999] cursor-not-allowed'
+                ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
                 : 'bg-[#2c7be5] text-white cursor-pointer hover:scale-105'
             }`}
           >
             Föregående
           </button>
-          <span className="py-2.5 text-sm text-[#777]">
+          <span className="py-2 text-sm text-gray-500">
             Visar {offset + 1}–{Math.min(offset + LIMIT, total)} av {total.toLocaleString()}
           </span>
           <button
             onClick={() => handleSearch(offset + LIMIT)}
             disabled={offset + LIMIT >= total}
-            className={`border-none py-2.5 px-5 rounded-lg font-bold text-sm transition-transform duration-150 ${
+            className={`py-2 px-5 rounded-lg font-bold text-sm transition-transform ${
               offset + LIMIT >= total
-                ? 'bg-[#ccc] text-[#999] cursor-not-allowed'
+                ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
                 : 'bg-[#2c7be5] text-white cursor-pointer hover:scale-105'
             }`}
           >
@@ -518,6 +499,8 @@ function JobSearch() {
           </button>
         </div>
       )}
+
+      </div>
     </div>
   );
 }

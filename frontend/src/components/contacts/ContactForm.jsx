@@ -99,62 +99,62 @@ function ContactForm({ onContactCreated, editContact, onContactUpdated, onCancel
   };
 
   return (
-    <div className="bg-white p-[25px] rounded-xl shadow-[0_3px_8px_rgba(0,0,0,0.05)] mb-[30px]">
-      <h3 className="mt-0">
+    <div className="bg-white p-6 rounded-xl shadow mb-8">
+      <h3 className="font-semibold mt-0">
         {isEditing ? 'Redigera Kontakt' : 'Skapa Ny Kontakt'}
       </h3>
 
       {errors.submit && (
-        <div className="bg-[#ffebee] text-[#e74c3c] p-3 rounded-lg mb-5 text-sm">
+        <div className="bg-red-50 text-red-500 p-3 rounded-lg mb-5 text-sm">
           {errors.submit}
         </div>
       )}
 
       <form onSubmit={handleSubmit}>
-        <div className="grid grid-cols-2 gap-[15px] mb-[15px]">
+        <div className="grid grid-cols-2 gap-4 mb-4">
           <div>
-            <label className="block mb-[5px] font-semibold text-sm text-[#2c3e50]">
+            <label className="block mb-1 font-semibold text-sm text-gray-700">
               Namn (För- och efternamn) *
             </label>
-            <input type="text" name="name" value={formData.name} onChange={handleChange} placeholder="t.ex. Anna Andersson" className={`w-full p-2.5 rounded-md text-sm box-border ${errors.name ? "border-2 border-[#e74c3c]" : "border border-[#ccc]"}`} />
-            {errors.name && <span className="text-[#e74c3c] text-xs">{errors.name}</span>}
+            <input type="text" name="name" value={formData.name} onChange={handleChange} placeholder="t.ex. Anna Andersson" className={`w-full border rounded px-3 py-2 text-sm ${errors.name ? "border-2 border-red-500" : ""}`} />
+            {errors.name && <span className="text-red-500 text-xs">{errors.name}</span>}
           </div>
 
           <div>
-            <label className="block mb-[5px] font-semibold text-sm text-[#2c3e50]">
+            <label className="block mb-1 font-semibold text-sm text-gray-700">
               E-post *
             </label>
-            <input type="email" name="email" value={formData.email} onChange={handleChange} placeholder="namn@exempel.se" className={`w-full p-2.5 rounded-md text-sm box-border ${errors.email ? "border-2 border-[#e74c3c]" : "border border-[#ccc]"}`} />
-            {errors.email && <span className="text-[#e74c3c] text-xs">{errors.email}</span>}
+            <input type="email" name="email" value={formData.email} onChange={handleChange} placeholder="namn@exempel.se" className={`w-full border rounded px-3 py-2 text-sm ${errors.email ? "border-2 border-red-500" : ""}`} />
+            {errors.email && <span className="text-red-500 text-xs">{errors.email}</span>}
           </div>
 
           <div>
-            <label className="block mb-[5px] font-semibold text-sm text-[#2c3e50]">
+            <label className="block mb-1 font-semibold text-sm text-gray-700">
               Telefonnummer *
             </label>
-            <input type="tel" name="phone" value={formData.phone} onChange={handleChange} placeholder="t.ex. 070-123 45 67" className={`w-full p-2.5 rounded-md text-sm box-border ${errors.phone ? "border-2 border-[#e74c3c]" : "border border-[#ccc]"}`} />
-            {errors.phone && <span className="text-[#e74c3c] text-xs">{errors.phone}</span>}
+            <input type="tel" name="phone" value={formData.phone} onChange={handleChange} placeholder="t.ex. 070-123 45 67" className={`w-full border rounded px-3 py-2 text-sm ${errors.phone ? "border-2 border-red-500" : ""}`} />
+            {errors.phone && <span className="text-red-500 text-xs">{errors.phone}</span>}
           </div>
 
           <div>
-            <label className="block mb-[5px] font-semibold text-sm text-[#2c3e50]">
+            <label className="block mb-1 font-semibold text-sm text-gray-700">
               Företag *
             </label>
-            <input type="text" name="company" value={formData.company} onChange={handleChange} placeholder="t.ex. Spotify AB" className={`w-full p-2.5 rounded-md text-sm box-border ${errors.company ? "border-2 border-[#e74c3c]" : "border border-[#ccc]"}`} />
-            {errors.company && <span className="text-[#e74c3c] text-xs">{errors.company}</span>}
+            <input type="text" name="company" value={formData.company} onChange={handleChange} placeholder="t.ex. Spotify AB" className={`w-full border rounded px-3 py-2 text-sm ${errors.company ? "border-2 border-red-500" : ""}`} />
+            {errors.company && <span className="text-red-500 text-xs">{errors.company}</span>}
           </div>
 
           <div>
-            <label className="block mb-[5px] font-semibold text-sm text-[#2c3e50]">
+            <label className="block mb-1 font-semibold text-sm text-gray-700">
               Roll *
             </label>
-            <input type="text" name="role" value={formData.role} onChange={handleChange} placeholder="t.ex. Recruiter" className={`w-full p-2.5 rounded-md text-sm box-border ${errors.role ? "border-2 border-[#e74c3c]" : "border border-[#ccc]"}`} />
-            {errors.role && <span className="text-[#e74c3c] text-xs">{errors.role}</span>}
+            <input type="text" name="role" value={formData.role} onChange={handleChange} placeholder="t.ex. Recruiter" className={`w-full border rounded px-3 py-2 text-sm ${errors.role ? "border-2 border-red-500" : ""}`} />
+            {errors.role && <span className="text-red-500 text-xs">{errors.role}</span>}
           </div>
         </div>
 
         <div className="mb-5">
-          <label className="block mb-[5px] font-semibold text-sm text-[#2c3e50]">
+          <label className="block mb-1 font-semibold text-sm text-gray-700">
             Anteckningar (frivilligt)
           </label>
           <textarea
@@ -163,7 +163,7 @@ function ContactForm({ onContactCreated, editContact, onContactUpdated, onCancel
             onChange={handleChange}
             rows="3"
             placeholder="Eventuella anteckningar..."
-            className="w-full p-2.5 rounded-md border border-[#ccc] text-sm font-[inherit] box-border"
+            className="w-full border rounded px-3 py-2 text-sm font-[inherit]"
           />
         </div>
 
@@ -171,7 +171,7 @@ function ContactForm({ onContactCreated, editContact, onContactUpdated, onCancel
           <button
             type="submit"
             disabled={loading}
-            className={`text-white border-none px-[18px] py-2.5 rounded-lg font-bold text-sm hover:scale-105 transition-transform duration-150 ${loading ? "bg-[#ccc] cursor-not-allowed" : "bg-[#2c7be5] cursor-pointer"}`}
+            className={`text-white px-4 py-2 rounded-lg font-bold text-sm hover:scale-105 transition-transform ${loading ? "bg-gray-300 cursor-not-allowed" : "bg-[#2c7be5] cursor-pointer"}`}
           >
             {loading ? 'Sparar...' : (isEditing ? 'Uppdatera' : 'Skapa')}
           </button>
@@ -180,7 +180,7 @@ function ContactForm({ onContactCreated, editContact, onContactUpdated, onCancel
             <button
               type="button"
               onClick={onCancel}
-              className="bg-[#6c757d] text-white border-none px-[18px] py-2.5 rounded-lg cursor-pointer font-bold text-sm hover:scale-105 transition-transform duration-150"
+              className="bg-gray-500 text-white px-4 py-2 rounded-lg font-bold text-sm hover:scale-105 transition-transform"
             >
               Avbryt
             </button>

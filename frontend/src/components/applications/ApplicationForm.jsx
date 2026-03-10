@@ -35,9 +35,9 @@ export default function ApplicationForm() {
     <div className="flex justify-center p-10 bg-[#f4f6f8] min-h-screen">
       <form
         onSubmit={handleSubmit}
-        className="w-105 bg-white p-7.5 rounded-xl shadow-[0_3px_8px_rgba(0,0,0,0.05)] flex flex-col gap-3.75 h-fit"
+        className="w-full max-w-md bg-white p-8 rounded-xl shadow flex flex-col gap-4 h-fit"
       >
-        <h2 className="mt-0">
+        <h2 className="text-xl font-bold mt-0">
           Lägg till ansökan
         </h2>
 
@@ -47,7 +47,7 @@ export default function ApplicationForm() {
           value={formData.company}
           onChange={handleChange}
           required
-          className="p-2.5 rounded-md border border-[#ccc] text-sm"
+          className="w-full border rounded px-3 py-2 text-sm"
         />
 
         <input
@@ -56,14 +56,14 @@ export default function ApplicationForm() {
           value={formData.role}
           onChange={handleChange}
           required
-          className="p-2.5 rounded-md border border-[#ccc] text-sm"
+          className="w-full border rounded px-3 py-2 text-sm"
         />
 
         <select
           name="status"
           value={formData.status}
           onChange={handleChange}
-          className="p-2.5 rounded-md border border-[#ccc] text-sm"
+          className="border rounded px-3 py-2 text-sm"
         >
           <option value="applied">Ansökt</option>
           <option value="interview">Intervju</option>
@@ -76,7 +76,7 @@ export default function ApplicationForm() {
           placeholder="Källa"
           value={formData.source}
           onChange={handleChange}
-          className="p-2.5 rounded-md border border-[#ccc] text-sm"
+          className="w-full border rounded px-3 py-2 text-sm"
         />
 
         <textarea
@@ -84,12 +84,12 @@ export default function ApplicationForm() {
           placeholder="Anteckningar"
           value={formData.notes}
           onChange={handleChange}
-          className="p-2.5 rounded-md border border-[#ccc] text-sm min-h-20 font-[inherit]"
+          className="w-full border rounded px-3 py-2 text-sm min-h-20 font-[inherit]"
         />
 
         <button
           type="submit"
-          className="bg-[#2c7be5] text-white border-none p-2.5 rounded-lg font-bold cursor-pointer text-sm hover:scale-105 transition-transform duration-150"
+          className="bg-[#2c7be5] text-white px-4 py-2 rounded-lg font-bold text-sm hover:scale-105 transition-transform"
         >
           Lägg till ansökan
         </button>
