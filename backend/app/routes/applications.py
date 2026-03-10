@@ -126,17 +126,23 @@ def get_application_stats(
         if app.status.lower() == "interview"
     ])
 
+    offer = len([
+        app for app in applications
+        if app.status.lower() == "offer"
+  ])
+
     rejected = len([
         app for app in applications
         if app.status.lower() == "rejected"
     ])
 
     return {
-        "total": total,
-        "applied": applied,
-        "interview": interview,
-        "rejected": rejected
-    }
+    "total": total,
+    "applied": applied,
+    "interview": interview,
+    "offer": offer,
+    "rejected": rejected
+}
 
 
 # ---------

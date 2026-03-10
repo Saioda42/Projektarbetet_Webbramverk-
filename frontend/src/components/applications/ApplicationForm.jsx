@@ -88,16 +88,12 @@ export default function ApplicationForm() {
           style={inputStyle}
         />
 
-        <select
-          name="status"
-          value={formData.status}
-          onChange={handleChange}
-          style={inputStyle}
-        >
-          <option value="applied">Applied</option>
-          <option value="interview">Interview</option>
-          <option value="rejected">Rejected</option>
-        </select>
+        <select name="status" value={formData.status} onChange={handleChange}>
+  <option value="applied">Ansökt</option>
+  <option value="interview">Intervju</option>
+  <option value="offer">Erbjudande</option>
+  <option value="rejected">Avslag</option>
+</select>
 
         <input
           name="source"
@@ -142,8 +138,8 @@ export default function ApplicationForm() {
 }
 
 const inputStyle = {
-  padding: "10px",
+  padding: "12px",
   borderRadius: "6px",
   border: "1px solid #ccc",
-  fontSize: "14px"
+  fontSize: "15px"
 };

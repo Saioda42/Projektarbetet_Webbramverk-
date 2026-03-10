@@ -17,20 +17,29 @@ import {
   Legend
 } from "recharts";
 
-function Dashboard() {
+import {
+  Briefcase,
+  Send,
+  Users,
+  XCircle
+} from "lucide-react";
+
+export default function Dashboard() {
 
   const navigate = useNavigate();
 
   const [applications, setApplications] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  const [filter, setFilter] = useState("all");
+
   const [stats, setStats] = useState({
     total: 0,
     applied: 0,
     interview: 0,
+    offer: 0,
     rejected: 0
   });
-
-  const [filter, setFilter] = useState("all");
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     loadData();
@@ -48,7 +57,7 @@ function Dashboard() {
 
     } catch (error) {
 
-      console.error("Error loading dashboard:", error);
+      console.error("Kunde inte ladda data:", error);
 
     } finally {
 
@@ -60,7 +69,7 @@ function Dashboard() {
 
   const handleDelete = async (id) => {
 
-    if (!window.confirm("Delete this application?")) return;
+    if (!window.confirm("Ta bort ansökan?")) return;
 
     try {
 
@@ -115,100 +124,83 @@ function Dashboard() {
   const chartData = [
     { name: "Applied", value: stats.applied },
     { name: "Interview", value: stats.interview },
+    { name: "Offer", value: stats.offer },
     { name: "Rejected", value: stats.rejected }
   ];
 
-  const COLORS = ["#3498db", "#f39c12", "#e74c3c"];
+  const COLORS = [
+    "#3b82f6",
+    "#f59e0b",
+    "#10b981",
+    "#ef4444"
+  ];
 
   return (
 
-    <div
-      style={{
-        padding: "40px",
-        background: "#f4f6f8",
-        minHeight: "100vh"
-      }}
-    >
+    <div className="p-8 bg-gray-100 min-h-screen">
 
-      {/* HEADER */}
+      {/* Header */}
 
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          marginBottom: "30px"
-        }}
-      >
+      <div className="flex justify-between items-center mb-8">
 
-        <h2 style={{ margin: 0 }}>Dashboard</h2>
+        <h1 className="text-2xl font-bold">
+          Dashboard
+        </h1>
 
         <button
           onClick={() => navigate("/applications/new")}
-          style={{
-            background: "#2c7be5",
-            color: "white",
-            border: "none",
-            padding: "10px 18px",
-            borderRadius: "8px",
-            cursor: "pointer",
-            fontWeight: "bold",
-            transition: "transform 0.15s"
-          }}
-          onMouseEnter={(e) =>
-            (e.currentTarget.style.transform = "scale(1.05)")
-          }
-          onMouseLeave={(e) =>
-            (e.currentTarget.style.transform = "scale(1)")
-          }
+          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-semibold transition"
         >
-          + Add Application
+          + Lägg till ansökan
         </button>
 
       </div>
 
-      {/* STATS */}
+      {/* Stats */}
 
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(4,1fr)",
-          gap: "20px",
-          marginBottom: "30px"
-        }}
-      >
+      <div className="grid grid-cols-4 gap-6 mb-10">
 
-        <StatCard title="Total" value={stats.total} color="#2c3e50" />
-        <StatCard title="Applied" value={stats.applied} color="#3498db" />
-        <StatCard title="Interview" value={stats.interview} color="#f39c12" />
-        <StatCard title="Rejected" value={stats.rejected} color="#e74c3c" />
+        <StatCard
+          title="Totalt"
+          value={stats.total}
+          icon={<Briefcase size={28} />}
+          color="text-gray-700"
+        />
+
+        <StatCard
+          title="Ansökta"
+          value={stats.applied}
+          icon={<Send size={28} />}
+          color="text-blue-600"
+        />
+
+        <StatCard
+          title="Intervju"
+          value={stats.interview}
+          icon={<Users size={28} />}
+          color="text-yellow-600"
+        />
+
+        <StatCard
+          title="Avslag"
+          value={stats.rejected}
+          icon={<XCircle size={28} />}
+          color="text-red-600"
+        />
 
       </div>
 
-      {/* MAIN DASHBOARD GRID */}
+      {/* Main grid */}
 
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "360px 1fr",
-          gap: "30px"
-        }}
-      >
+      <div className="grid grid-cols-[350px_1fr] gap-10">
 
-        {/* CHART */}
+        {/* Chart */}
 
-        <div
-          style={{
-            background: "white",
-            padding: "25px",
-            borderRadius: "12px",
-            boxShadow: "0 3px 8px rgba(0,0,0,0.05)",
-            height: "fit-content"
-          }}
-        >
+        <div className="bg-white p-6 rounded-xl shadow">
 
-          <h3 style={{ marginBottom: "20px" }}>
-            Application Status
-          </h3>
+          <h2 className="text-lg font-semibold mb-4">
+            Ansökningsstatus
+          </h2>
 
           <PieChart width={300} height={250}>
 
@@ -237,68 +229,53 @@ function Dashboard() {
 
         </div>
 
-        {/* APPLICATION LIST */}
+        {/* Applications */}
 
         <div>
 
-          {/* FILTER */}
+          {/* Filter */}
 
-          <div style={{ marginBottom: "20px" }}>
+          <div className="mb-4">
 
-            <label style={{ marginRight: "10px" }}>
-              Filter:
+            <label className="mr-2 font-medium">
+              Filtrera:
             </label>
 
             <select
               value={filter}
               onChange={(e) => setFilter(e.target.value)}
+              className="border rounded px-2 py-1"
             >
-              <option value="all">All</option>
-              <option value="applied">Applied</option>
-              <option value="interview">Interview</option>
-              <option value="rejected">Rejected</option>
+              <option value="all">Alla</option>
+              <option value="applied">Ansökt</option>
+              <option value="interview">Intervju</option>
+              <option value="offer">Erbjudande</option>
+              <option value="rejected">Avslag</option>
             </select>
 
           </div>
 
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fill,260px)",
-              gap: "20px"
-            }}
-          >
+          {/* Cards */}
+
+          <div className="grid grid-cols-[repeat(auto-fill,260px)] gap-5">
 
             {!loading &&
               filteredApplications.map(app => (
 
                 <div
                   key={app.id}
-                  style={{
-                    background: "white",
-                    padding: "20px",
-                    borderRadius: "12px",
-                    boxShadow: "0 4px 10px rgba(0,0,0,0.05)",
-                    transition: "all 0.2s ease",
-                    cursor: "pointer"
-                  }}
-                  onMouseEnter={(e) =>
-                    (e.currentTarget.style.transform = "translateY(-4px)")
-                  }
-                  onMouseLeave={(e) =>
-                    (e.currentTarget.style.transform = "translateY(0)")
-                  }
+                  className="bg-white p-5 rounded-xl shadow hover:-translate-y-1 transition cursor-pointer"
                 >
 
-                  <h3 style={{ marginTop: 0 }}>
+                  <h3 className="font-semibold text-lg">
                     {app.company}
                   </h3>
 
-                  <p>
-                    <strong>Role:</strong> {app.role}
+                  <p className="text-sm text-gray-600">
+                    {app.role}
                   </p>
 
-                  <p style={{ fontSize: "14px", color: "#666" }}>
+                  <p className="text-sm text-gray-400 mt-1">
                     {new Date(app.applied_date).toLocaleDateString()}
                   </p>
 
@@ -307,37 +284,21 @@ function Dashboard() {
                     onChange={(e) =>
                       handleStatusChange(app.id, e.target.value)
                     }
-                    style={{
-                      marginTop: "10px",
-                      padding: "6px",
-                      borderRadius: "6px",
-                      border: "1px solid #ccc"
-                    }}
+                    className="mt-3 w-full border rounded px-2 py-1"
                   >
 
-                    <option value="applied">Applied</option>
-                    <option value="interview">Interview</option>
-                    <option value="rejected">Rejected</option>
+                    <option value="applied">Ansökt</option>
+                    <option value="interview">Intervju</option>
+                    <option value="offer">Erbjudande</option>
+                    <option value="rejected">Avslag</option>
 
                   </select>
 
-                  <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "flex-end",
-                      marginTop: "10px"
-                    }}
-                  >
+                  <div className="flex justify-end mt-3">
 
                     <button
                       onClick={() => handleDelete(app.id)}
-                      style={{
-                        background: "none",
-                        border: "none",
-                        cursor: "pointer",
-                        fontSize: "18px",
-                        color: "#e74c3c"
-                      }}
+                      className="text-red-500 hover:text-red-700"
                     >
                       🗑
                     </button>
@@ -360,39 +321,30 @@ function Dashboard() {
 
 }
 
-function StatCard({ title, value, color }) {
+function StatCard({ title, value, icon, color }) {
 
   return (
 
-    <div
-      style={{
-        background: "white",
-        padding: "20px",
-        borderRadius: "12px",
-        textAlign: "center",
-        boxShadow: "0 3px 8px rgba(0,0,0,0.04)",
-        transition: "transform 0.15s"
-      }}
-      onMouseEnter={(e) =>
-        (e.currentTarget.style.transform = "translateY(-3px)")
-      }
-      onMouseLeave={(e) =>
-        (e.currentTarget.style.transform = "translateY(0)")
-      }
-    >
+    <div className="bg-white p-5 rounded-xl shadow flex items-center gap-4 hover:-translate-y-1 transition">
 
-      <p style={{ color: "#777", marginBottom: "5px" }}>
-        {title}
-      </p>
+      <div className={color}>
+        {icon}
+      </div>
 
-      <h2 style={{ color, margin: 0 }}>
-        {value}
-      </h2>
+      <div>
+
+        <p className="text-sm text-gray-500">
+          {title}
+        </p>
+
+        <p className="text-xl font-bold">
+          {value}
+        </p>
+
+      </div>
 
     </div>
 
   );
 
 }
-
-export default Dashboard;
