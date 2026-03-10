@@ -1,75 +1,110 @@
+import {
+  getApplications,
+  deleteApplication,
+  getApplicationStats
+} from "../../services/applicationsApi";
+
+import api from "../../services/api";
+
 import { useEffect, useState } from "react";
-import { getApplications, deleteApplication } from "../../services/applicationsApi";
+import { useNavigate } from "react-router-dom";
+
+import {
+  PieChart,
+  Pie,
+  Cell,
+  Tooltip,
+  Legend
+} from "recharts";
 
 function Dashboard() {
+
+  const navigate = useNavigate();
+
   const [applications, setApplications] = useState([]);
+  const [stats, setStats] = useState({
+    total: 0,
+    applied: 0,
+    interview: 0,
+    rejected: 0
+  });
+
   const [filter, setFilter] = useState("all");
   const [loading, setLoading] = useState(true);
 
-  /* =========================
-     Hämta applications
-  ========================= */
-
   useEffect(() => {
-    const fetchApplications = async () => {
-      try {
-        const res = await getApplications();
-        setApplications(res.data);
-      } catch (err) {
-        console.error("Failed to load applications:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchApplications();
+    loadData();
   }, []);
 
-  /* =========================
-     Statistik
-  ========================= */
+  const loadData = async () => {
 
-  const total = applications.length;
+    try {
 
-  const applied = applications.filter(
-    app => app.status?.toLowerCase() === "applied"
-  ).length;
+      const apps = await getApplications();
+      setApplications(apps);
 
-  const interview = applications.filter(
-    app => app.status?.toLowerCase() === "interview"
-  ).length;
+      const statsData = await getApplicationStats();
+      setStats(statsData);
 
-  const rejected = applications.filter(
-    app => app.status?.toLowerCase() === "rejected"
-  ).length;
+    } catch (error) {
 
-  /* =========================
-     Status helpers
-  ========================= */
+      console.error("Error loading dashboard:", error);
 
-  const normalizeStatus = (status) => {
-    if (!status) return "";
-    return status.charAt(0).toUpperCase() + status.slice(1).toLowerCase();
-  };
+    } finally {
 
-  const getStatusColor = (status) => {
-    const normalized = normalizeStatus(status);
+      setLoading(false);
 
-    switch (normalized) {
-      case "Applied":
-        return "#3498db";
-      case "Interview":
-        return "#f39c12";
-      case "Rejected":
-        return "#e74c3c";
-      default:
-        return "#555";
     }
+
   };
 
-  /* =========================
-     Filter
-  ========================= */
+  const handleDelete = async (id) => {
+
+    if (!window.confirm("Delete this application?")) return;
+
+    try {
+
+      await deleteApplication(id);
+
+      setApplications(prev =>
+        prev.filter(app => app.id !== id)
+      );
+
+      loadData();
+
+    } catch (error) {
+
+      console.error("Delete failed:", error);
+
+    }
+
+  };
+
+  const handleStatusChange = async (id, newStatus) => {
+
+    try {
+
+      await api.put(`/applications/${id}`, {
+        status: newStatus
+      });
+
+      setApplications(prev =>
+        prev.map(app =>
+          app.id === id
+            ? { ...app, status: newStatus }
+            : app
+        )
+      );
+
+      loadData();
+
+    } catch (error) {
+
+      console.error("Status update failed:", error);
+
+    }
+
+  };
 
   const filteredApplications = applications.filter(
     app =>
@@ -77,174 +112,287 @@ function Dashboard() {
       app.status?.toLowerCase() === filter
   );
 
-  /* =========================
-     Delete
-  ========================= */
+  const chartData = [
+    { name: "Applied", value: stats.applied },
+    { name: "Interview", value: stats.interview },
+    { name: "Rejected", value: stats.rejected }
+  ];
 
-  const handleDelete = async (id) => {
-    const confirmDelete = window.confirm(
-      "Are you sure you want to delete this application?"
-    );
-
-    if (!confirmDelete) return;
-
-    try {
-      await deleteApplication(id);
-
-      setApplications(prev =>
-        prev.filter(app => app.id !== id)
-      );
-
-    } catch (error) {
-      console.error("Delete failed:", error);
-    }
-  };
-
-  /* =========================
-     Render
-  ========================= */
+  const COLORS = ["#3498db", "#f39c12", "#e74c3c"];
 
   return (
+
     <div
       style={{
-        padding: "30px",
-        backgroundColor: "#f5f7fa",
+        padding: "40px",
+        background: "#f4f6f8",
         minHeight: "100vh"
       }}
     >
-      <h2 style={{ marginBottom: "30px" }}>Dashboard</h2>
 
-      {/* Statistik */}
-      <div style={{ display: "flex", gap: "20px", marginBottom: "30px" }}>
-        <StatCard title="Total" value={total} color="#2c3e50" />
-        <StatCard title="Applied" value={applied} color="#3498db" />
-        <StatCard title="Interview" value={interview} color="#f39c12" />
-        <StatCard title="Rejected" value={rejected} color="#e74c3c" />
-      </div>
+      {/* HEADER */}
 
-      {/* Filter */}
-      <div style={{ marginBottom: "25px" }}>
-        <label style={{ marginRight: "10px", fontWeight: "bold" }}>
-          Filter by status:
-        </label>
-        <select
-          value={filter}
-          onChange={(e) => setFilter(e.target.value)}
-          style={{ padding: "5px 10px" }}
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          marginBottom: "30px"
+        }}
+      >
+
+        <h2 style={{ margin: 0 }}>Dashboard</h2>
+
+        <button
+          onClick={() => navigate("/applications/new")}
+          style={{
+            background: "#2c7be5",
+            color: "white",
+            border: "none",
+            padding: "10px 18px",
+            borderRadius: "8px",
+            cursor: "pointer",
+            fontWeight: "bold",
+            transition: "transform 0.15s"
+          }}
+          onMouseEnter={(e) =>
+            (e.currentTarget.style.transform = "scale(1.05)")
+          }
+          onMouseLeave={(e) =>
+            (e.currentTarget.style.transform = "scale(1)")
+          }
         >
-          <option value="all">All</option>
-          <option value="applied">Applied</option>
-          <option value="interview">Interview</option>
-          <option value="rejected">Rejected</option>
-        </select>
+          + Add Application
+        </button>
+
       </div>
 
-      {/* Loading */}
-      {loading && <p>Loading applications...</p>}
+      {/* STATS */}
 
-      {/* Empty state */}
-      {!loading && filteredApplications.length === 0 && (
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(4,1fr)",
+          gap: "20px",
+          marginBottom: "30px"
+        }}
+      >
+
+        <StatCard title="Total" value={stats.total} color="#2c3e50" />
+        <StatCard title="Applied" value={stats.applied} color="#3498db" />
+        <StatCard title="Interview" value={stats.interview} color="#f39c12" />
+        <StatCard title="Rejected" value={stats.rejected} color="#e74c3c" />
+
+      </div>
+
+      {/* MAIN DASHBOARD GRID */}
+
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "360px 1fr",
+          gap: "30px"
+        }}
+      >
+
+        {/* CHART */}
+
         <div
           style={{
-            padding: "20px",
-            backgroundColor: "white",
-            borderRadius: "10px",
-            textAlign: "center",
-            boxShadow: "0 4px 8px rgba(0,0,0,0.05)"
+            background: "white",
+            padding: "25px",
+            borderRadius: "12px",
+            boxShadow: "0 3px 8px rgba(0,0,0,0.05)",
+            height: "fit-content"
           }}
         >
-          <p>No applications found.</p>
+
+          <h3 style={{ marginBottom: "20px" }}>
+            Application Status
+          </h3>
+
+          <PieChart width={300} height={250}>
+
+            <Pie
+              data={chartData}
+              dataKey="value"
+              outerRadius={90}
+              label
+            >
+
+              {chartData.map((entry, index) => (
+
+                <Cell
+                  key={index}
+                  fill={COLORS[index]}
+                />
+
+              ))}
+
+            </Pie>
+
+            <Tooltip />
+            <Legend />
+
+          </PieChart>
+
         </div>
-      )}
 
-      {/* Cards */}
-      <div style={{ display: "flex", flexWrap: "wrap", gap: "20px" }}>
-        {!loading &&
-          filteredApplications.map(app => {
-            const normalizedStatus = normalizeStatus(app.status);
+        {/* APPLICATION LIST */}
 
-            return (
-              <div
-                key={app.id}
-                style={{
-                  borderRadius: "12px",
-                  padding: "20px",
-                  width: "260px",
-                  backgroundColor: "white",
-                  boxShadow: "0 6px 15px rgba(0,0,0,0.08)"
-                }}
-              >
-                <h3>{app.company}</h3>
+        <div>
 
-                <p>
-                  <strong>Role:</strong> {app.role}
-                </p>
+          {/* FILTER */}
 
-                <p style={{ color: "#666", fontSize: "14px" }}>
-                  <strong>Applied:</strong>{" "}
-                  {new Date(app.applied_date).toLocaleDateString()}
-                </p>
+          <div style={{ marginBottom: "20px" }}>
+
+            <label style={{ marginRight: "10px" }}>
+              Filter:
+            </label>
+
+            <select
+              value={filter}
+              onChange={(e) => setFilter(e.target.value)}
+            >
+              <option value="all">All</option>
+              <option value="applied">Applied</option>
+              <option value="interview">Interview</option>
+              <option value="rejected">Rejected</option>
+            </select>
+
+          </div>
+
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fill,260px)",
+              gap: "20px"
+            }}
+          >
+
+            {!loading &&
+              filteredApplications.map(app => (
 
                 <div
+                  key={app.id}
                   style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "16px",
-                    marginTop: "15px"
+                    background: "white",
+                    padding: "20px",
+                    borderRadius: "12px",
+                    boxShadow: "0 4px 10px rgba(0,0,0,0.05)",
+                    transition: "all 0.2s ease",
+                    cursor: "pointer"
                   }}
+                  onMouseEnter={(e) =>
+                    (e.currentTarget.style.transform = "translateY(-4px)")
+                  }
+                  onMouseLeave={(e) =>
+                    (e.currentTarget.style.transform = "translateY(0)")
+                  }
                 >
-                  <span
-                    style={{
-                      padding: "6px 12px",
-                      borderRadius: "20px",
-                      fontSize: "13px",
-                      fontWeight: "bold",
-                      backgroundColor: getStatusColor(app.status),
-                      color: "white"
-                    }}
-                  >
-                    {normalizedStatus}
-                  </span>
 
-                  <button
-                    onClick={() => handleDelete(app.id)}
+                  <h3 style={{ marginTop: 0 }}>
+                    {app.company}
+                  </h3>
+
+                  <p>
+                    <strong>Role:</strong> {app.role}
+                  </p>
+
+                  <p style={{ fontSize: "14px", color: "#666" }}>
+                    {new Date(app.applied_date).toLocaleDateString()}
+                  </p>
+
+                  <select
+                    value={app.status}
+                    onChange={(e) =>
+                      handleStatusChange(app.id, e.target.value)
+                    }
                     style={{
-                      border: "none",
-                      background: "none",
-                      cursor: "pointer",
-                      fontSize: "22px",
-                      color: "#e74c3c"
+                      marginTop: "10px",
+                      padding: "6px",
+                      borderRadius: "6px",
+                      border: "1px solid #ccc"
                     }}
                   >
-                    🗑
-                  </button>
+
+                    <option value="applied">Applied</option>
+                    <option value="interview">Interview</option>
+                    <option value="rejected">Rejected</option>
+
+                  </select>
+
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "flex-end",
+                      marginTop: "10px"
+                    }}
+                  >
+
+                    <button
+                      onClick={() => handleDelete(app.id)}
+                      style={{
+                        background: "none",
+                        border: "none",
+                        cursor: "pointer",
+                        fontSize: "18px",
+                        color: "#e74c3c"
+                      }}
+                    >
+                      🗑
+                    </button>
+
+                  </div>
+
                 </div>
-              </div>
-            );
-          })}
+
+              ))}
+
+          </div>
+
+        </div>
+
       </div>
+
     </div>
+
   );
+
 }
 
-/* Statistik-card */
-
 function StatCard({ title, value, color }) {
+
   return (
+
     <div
       style={{
-        flex: 1,
+        background: "white",
         padding: "20px",
-        backgroundColor: "white",
         borderRadius: "12px",
-        boxShadow: "0 6px 15px rgba(0,0,0,0.08)",
-        textAlign: "center"
+        textAlign: "center",
+        boxShadow: "0 3px 8px rgba(0,0,0,0.04)",
+        transition: "transform 0.15s"
       }}
+      onMouseEnter={(e) =>
+        (e.currentTarget.style.transform = "translateY(-3px)")
+      }
+      onMouseLeave={(e) =>
+        (e.currentTarget.style.transform = "translateY(0)")
+      }
     >
-      <p style={{ margin: 0, color: "#777" }}>{title}</p>
-      <h2 style={{ margin: "10px 0", color }}>{value}</h2>
+
+      <p style={{ color: "#777", marginBottom: "5px" }}>
+        {title}
+      </p>
+
+      <h2 style={{ color, margin: 0 }}>
+        {value}
+      </h2>
+
     </div>
+
   );
+
 }
 
 export default Dashboard;

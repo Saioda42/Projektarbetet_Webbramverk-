@@ -7,7 +7,6 @@ from datetime import date
 from app.database import get_db
 from app.models.job_application import JobApplication
 from pydantic import BaseModel
-
 from app.routes.auth import get_current_user
 
 
@@ -61,12 +60,14 @@ def create_application(
     current_user = Depends(get_current_user),
 ):
     db_application = JobApplication(
-    **application.dict(),
-    user_id=current_user.id
-)
+        **application.dict(),
+        user_id=current_user.id
+    )
+
     db.add(db_application)
     db.commit()
     db.refresh(db_application)
+
     return db_application
 
 
@@ -74,24 +75,21 @@ def create_application(
 # READ (ALL)
 # ---------
 
-
-
 @router.get("/", response_model=list[JobApplicationResponse])
 def get_applications(
     status: Optional[str] = Query(None, description="Filter by status"),
     order: Optional[str] = Query("desc", description="Sort order: asc or desc"),
     db: Session = Depends(get_db),
-    current_user: str = Depends(get_current_user),
+    current_user = Depends(get_current_user),
 ):
-    query = db.query(JobApplication).filter(
-    JobApplication.user_id == current_user.id
-)
 
-    # Filter
+    query = db.query(JobApplication).filter(
+        JobApplication.user_id == current_user.id
+    )
+
     if status:
         query = query.filter(JobApplication.status == status)
 
-    # Sortering på applied_date
     if order == "asc":
         query = query.order_by(asc(JobApplication.applied_date))
     else:
@@ -101,26 +99,65 @@ def get_applications(
 
 
 # ---------
+# STATS  (MUST COME BEFORE /{application_id})
+# ---------
+
+@router.get("/stats")
+def get_application_stats(
+    db: Session = Depends(get_db),
+    current_user = Depends(get_current_user)
+):
+
+    applications = (
+        db.query(JobApplication)
+        .filter(JobApplication.user_id == current_user.id)
+        .all()
+    )
+
+    total = len(applications)
+
+    applied = len([
+        app for app in applications
+        if app.status.lower() == "applied"
+    ])
+
+    interview = len([
+        app for app in applications
+        if app.status.lower() == "interview"
+    ])
+
+    rejected = len([
+        app for app in applications
+        if app.status.lower() == "rejected"
+    ])
+
+    return {
+        "total": total,
+        "applied": applied,
+        "interview": interview,
+        "rejected": rejected
+    }
+
+
+# ---------
 # READ (ONE)
 # ---------
 
-@router.get(
-    "/{application_id}",
-    response_model=JobApplicationResponse
-)
+@router.get("/{application_id}", response_model=JobApplicationResponse)
 def get_application(
     application_id: int,
     db: Session = Depends(get_db),
     current_user = Depends(get_current_user),
 ):
+
     application = (
-    db.query(JobApplication)
-    .filter(
-        JobApplication.id == application_id,
-        JobApplication.user_id == current_user.id
+        db.query(JobApplication)
+        .filter(
+            JobApplication.id == application_id,
+            JobApplication.user_id == current_user.id
+        )
+        .first()
     )
-    .first()
-)
 
     if application is None:
         raise HTTPException(
@@ -135,21 +172,20 @@ def get_application(
 # UPDATE
 # ---------
 
-@router.put(
-    "/{application_id}",
-    response_model=JobApplicationResponse
-)
+@router.put("/{application_id}", response_model=JobApplicationResponse)
 def update_application(
     application_id: int,
+    updates: JobApplicationUpdate,
     db: Session = Depends(get_db),
     current_user = Depends(get_current_user)
 ):
+
     application = (
         db.query(JobApplication)
         .filter(
-    JobApplication.id == application_id,
-    JobApplication.user_id == current_user.id
-)
+            JobApplication.id == application_id,
+            JobApplication.user_id == current_user.id
+        )
         .first()
     )
 
@@ -164,6 +200,7 @@ def update_application(
 
     db.commit()
     db.refresh(application)
+
     return application
 
 
@@ -171,21 +208,19 @@ def update_application(
 # DELETE
 # ---------
 
-@router.delete(
-    "/{application_id}",
-    status_code=status.HTTP_204_NO_CONTENT
-)
+@router.delete("/{application_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_application(
     application_id: int,
     db: Session = Depends(get_db),
     current_user = Depends(get_current_user)
 ):
+
     application = (
         db.query(JobApplication)
         .filter(
-    JobApplication.id == application_id,
-    JobApplication.user_id == current_user.id
-)
+            JobApplication.id == application_id,
+            JobApplication.user_id == current_user.id
+        )
         .first()
     )
 
