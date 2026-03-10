@@ -14,7 +14,8 @@ import {
   Pie,
   Cell,
   Tooltip,
-  Legend
+  Legend,
+  ResponsiveContainer
 } from "recharts";
 
 import {
@@ -228,40 +229,68 @@ const statusBorder = {
 
       {/* Main grid */}
 
-      <div className="grid grid-cols-[360px_1fr] gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-[380px_1fr] gap-8 items-start">
 
         {/* Chart */}
 
-        <div className="bg-white p-6 rounded-xl shadow">
+        <div className="bg-white p-6 rounded-xl shadow flex flex-col items-center">
 
-          <h3 className="mb-4 font-semibold">
-            Ansökningsstatus
-          </h3>
+  <h3 className="mb-4 font-semibold">
+    Ansökningsstatus
+  </h3>
 
-          <PieChart width={300} height={250}>
+  <ResponsiveContainer width="100%" height={250}>
 
-            <Pie
-              data={chartData}
-              dataKey="value"
-              outerRadius={90}
-              label
-            >
+  <PieChart>
 
-              {chartData.map((entry, index) => (
+    <Pie
+      data={chartData}
+      dataKey="value"
+      outerRadius={90}
+      innerRadius={50}
+      label
+    >
 
-                <Cell
-                  key={index}
-                  fill={COLORS[index]}
-                />
+      {chartData.map((entry, index) => (
 
-              ))}
+        <Cell
+          key={index}
+          fill={COLORS[index]}
+        />
 
-            </Pie>
+      ))}
 
-            <Tooltip />
-            <Legend />
+    </Pie>
 
-          </PieChart>
+    <Tooltip />
+
+  </PieChart>
+
+</ResponsiveContainer>
+<div className="grid grid-cols-2 gap-x-6 gap-y-2 mt-4 text-sm justify-items-center">
+
+  {chartData.map((item, index) => (
+
+    <div key={index} className="flex items-center gap-2 whitespace-nowrap">
+
+      <span
+        className="w-3 h-3 rounded-full"
+        style={{ backgroundColor: COLORS[index] }}
+      ></span>
+
+      <span className="text-gray-600">
+        {item.name}
+      </span>
+
+      <span className="font-semibold">
+        {item.value}
+      </span>
+
+    </div>
+
+  ))}
+
+</div>
 
         </div>
 
@@ -291,8 +320,11 @@ const statusBorder = {
 
           <div className="grid grid-cols-[repeat(auto-fill,260px)] gap-5">
 
-            {!loading &&
-              filteredApplications.map(app => (
+            {loading
+  ? Array.from({ length: 6 }).map((_, i) => (
+      <SkeletonCard key={i} />
+    ))
+  : filteredApplications.map(app => (
 
                 <div
                   key={app.id}
@@ -366,7 +398,7 @@ function StatCard({ title, value, icon, color }) {
 
   return (
 
-    <div className="bg-white p-6 rounded-xl shadow flex items-center justify-between hover:-translate-y-1 transition">
+    <div className="bg-white p-6 rounded-xl shadow-[0_4px_10px_rgba(0,0,0,0.05)] flex items-center justify-between hover:-translate-y-1 transition min-h-[90px]">
 
       <div>
 
@@ -448,4 +480,18 @@ function StatusProgress({ status }) {
 
   );
 
+}
+
+function SkeletonCard() {
+  return (
+    <div className="bg-white p-5 rounded-xl shadow animate-pulse">
+
+      <div className="h-4 bg-gray-200 rounded w-2/3 mb-3"></div>
+
+      <div className="h-3 bg-gray-200 rounded w-1/2 mb-4"></div>
+
+      <div className="h-2 bg-gray-200 rounded w-full"></div>
+
+    </div>
+  );
 }
