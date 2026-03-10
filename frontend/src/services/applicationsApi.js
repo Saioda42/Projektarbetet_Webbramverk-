@@ -13,3 +13,8 @@ export const getApplicationStats = async () => {
   const response = await api.get("/applications/stats");
   return response.data;
 };
+
+export const updateApplication = async (id, data) => {
+  const response = await api.put(`/applications/${id}`, data);
+  return response.data;
+};

@@ -1,111 +1,120 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 function Navbar({ onLogout }) {
-  const navigate = useNavigate();
 
-  const handleLogout = () => {
-    onLogout(); // Uppdatera state i App
-    navigate("/login");
+  const linkStyle = {
+    color: "white",
+    textDecoration: "none",
+    fontSize: "16px",
+    fontWeight: "500",
+    opacity: 0.9,
+    transition: "opacity 0.2s"
+  };
+
+  const handleHover = (e) => {
+    e.target.style.opacity = 1;
+  };
+
+  const handleLeave = (e) => {
+    e.target.style.opacity = 0.9;
   };
 
   return (
+
     <nav
       style={{
-        backgroundColor: "#2196F3",
-        padding: "15px 30px",
+        background: "#2c3e50",
+        padding: "18px 40px",
         display: "flex",
         justifyContent: "space-between",
         alignItems: "center",
-        boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+        color: "white",
+        boxShadow: "0 2px 6px rgba(0,0,0,0.1)"
       }}
     >
-      <div style={{ display: "flex", gap: "20px" }}>
+
+      <h1
+        style={{
+          margin: 0,
+          fontSize: "22px",
+          fontWeight: "700"
+        }}
+      >
+        JobTracker
+      </h1>
+
+      <div
+        style={{
+          display: "flex",
+          gap: "28px",
+          alignItems: "center"
+        }}
+      >
+
         <Link
           to="/"
-          style={{
-            color: "white",
-            textDecoration: "none",
-            fontSize: "18px",
-            fontWeight: "bold",
-            padding: "8px 16px",
-            borderRadius: "4px",
-            transition: "background-color 0.2s",
-          }}
-          onMouseOver={(e) => (e.target.style.backgroundColor = "#1976D2")}
-          onMouseOut={(e) => (e.target.style.backgroundColor = "transparent")}
+          style={linkStyle}
+          onMouseEnter={handleHover}
+          onMouseLeave={handleLeave}
         >
-          📊 Dashboard
+          Dashboard
         </Link>
 
         <Link
           to="/contacts"
-          style={{
-            color: "white",
-            textDecoration: "none",
-            fontSize: "18px",
-            fontWeight: "bold",
-            padding: "8px 16px",
-            borderRadius: "4px",
-            transition: "background-color 0.2s",
-          }}
-          onMouseOver={(e) => (e.target.style.backgroundColor = "#1976D2")}
-          onMouseOut={(e) => (e.target.style.backgroundColor = "transparent")}
+          style={linkStyle}
+          onMouseEnter={handleHover}
+          onMouseLeave={handleLeave}
         >
-          👥 Kontakter
+          Contacts
         </Link>
 
         <Link
           to="/cv"
-          style={{
-            color: "white",
-            textDecoration: "none",
-            fontSize: "18px",
-            fontWeight: "bold",
-            padding: "8px 16px",
-            borderRadius: "4px",
-            transition: "background-color 0.2s",
-          }}
-          onMouseOver={(e) => (e.target.style.backgroundColor = "#1976D2")}
-          onMouseOut={(e) => (e.target.style.backgroundColor = "transparent")}
+          style={linkStyle}
+          onMouseEnter={handleHover}
+          onMouseLeave={handleLeave}
         >
-          📄 Mitt CV
+          Mitt CV
         </Link>
 
         <Link
           to="/reminders"
-          style={{
-            color: "white",
-            textDecoration: "none",
-            fontSize: "18px",
-            fontWeight: "bold",
-            padding: "8px 16px",
-            borderRadius: "4px",
-            transition: "background-color 0.2s",
-          }}
-          onMouseOver={(e) => (e.target.style.backgroundColor = "#1976D2")}
-          onMouseOut={(e) => (e.target.style.backgroundColor = "transparent")}
+          style={linkStyle}
+          onMouseEnter={handleHover}
+          onMouseLeave={handleLeave}
         >
-          📧 Påminnelser
+          Påminnelser
         </Link>
+
+        <button
+          onClick={onLogout}
+          style={{
+            background: "#e74c3c",
+            border: "none",
+            color: "white",
+            padding: "8px 14px",
+            borderRadius: "6px",
+            cursor: "pointer",
+            fontWeight: "600",
+            transition: "transform 0.15s"
+          }}
+          onMouseEnter={(e) =>
+            (e.currentTarget.style.transform = "scale(1.05)")
+          }
+          onMouseLeave={(e) =>
+            (e.currentTarget.style.transform = "scale(1)")
+          }
+        >
+          Logout
+        </button>
+
       </div>
 
-      <button
-        onClick={handleLogout}
-        style={{
-          backgroundColor: "#f44336",
-          color: "white",
-          border: "none",
-          padding: "8px 16px",
-          borderRadius: "4px",
-          cursor: "pointer",
-          fontWeight: "bold",
-          fontSize: "16px",
-        }}
-      >
-        🚪 Logga ut
-      </button>
     </nav>
+
   );
+
 }
 
 export default Navbar;
