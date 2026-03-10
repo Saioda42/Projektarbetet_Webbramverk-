@@ -122,44 +122,17 @@ function Dashboard() {
 
   return (
 
-    <div
-      style={{
-        padding: "40px",
-        background: "#f4f6f8",
-        minHeight: "100vh"
-      }}
-    >
+    <div className="p-10 bg-[#f4f6f8] min-h-screen">
 
       {/* HEADER */}
 
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          marginBottom: "30px"
-        }}
-      >
+      <div className="flex justify-between mb-[30px]">
 
-        <h2 style={{ margin: 0 }}>Översikt</h2>
+        <h2 className="m-0">Översikt</h2>
 
         <button
           onClick={() => navigate("/applications/new")}
-          style={{
-            background: "#2c7be5",
-            color: "white",
-            border: "none",
-            padding: "10px 18px",
-            borderRadius: "8px",
-            cursor: "pointer",
-            fontWeight: "bold",
-            transition: "transform 0.15s"
-          }}
-          onMouseEnter={(e) =>
-            (e.currentTarget.style.transform = "scale(1.05)")
-          }
-          onMouseLeave={(e) =>
-            (e.currentTarget.style.transform = "scale(1)")
-          }
+          className="bg-[#2c7be5] text-white border-none px-[18px] py-2.5 rounded-lg cursor-pointer font-bold transition-transform duration-150 hover:scale-105"
         >
           + Lägg till ansökan
         </button>
@@ -168,14 +141,7 @@ function Dashboard() {
 
       {/* STATS */}
 
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(4,1fr)",
-          gap: "20px",
-          marginBottom: "30px"
-        }}
-      >
+      <div className="grid grid-cols-4 gap-5 mb-[30px]">
 
         <StatCard title="Totalt" value={stats.total} color="#2c3e50" />
         <StatCard title="Ansökt" value={stats.applied} color="#3498db" />
@@ -186,27 +152,13 @@ function Dashboard() {
 
       {/* MAIN DASHBOARD GRID */}
 
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "360px 1fr",
-          gap: "30px"
-        }}
-      >
+      <div className="grid grid-cols-[360px_1fr] gap-[30px]">
 
         {/* CHART */}
 
-        <div
-          style={{
-            background: "white",
-            padding: "25px",
-            borderRadius: "12px",
-            boxShadow: "0 3px 8px rgba(0,0,0,0.05)",
-            height: "fit-content"
-          }}
-        >
+        <div className="bg-white p-[25px] rounded-xl shadow-[0_3px_8px_rgba(0,0,0,0.05)] h-fit">
 
-          <h3 style={{ marginBottom: "20px" }}>
+          <h3 className="mb-5">
             Ansökningsstatus
           </h3>
 
@@ -243,9 +195,9 @@ function Dashboard() {
 
           {/* FILTER */}
 
-          <div style={{ marginBottom: "20px" }}>
+          <div className="mb-5">
 
-            <label style={{ marginRight: "10px" }}>
+            <label className="mr-2.5">
               Filtrera:
             </label>
 
@@ -261,36 +213,17 @@ function Dashboard() {
 
           </div>
 
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fill,260px)",
-              gap: "20px"
-            }}
-          >
+          <div className="grid grid-cols-[repeat(auto-fill,260px)] gap-5">
 
             {!loading &&
               filteredApplications.map(app => (
 
                 <div
                   key={app.id}
-                  style={{
-                    background: "white",
-                    padding: "20px",
-                    borderRadius: "12px",
-                    boxShadow: "0 4px 10px rgba(0,0,0,0.05)",
-                    transition: "all 0.2s ease",
-                    cursor: "pointer"
-                  }}
-                  onMouseEnter={(e) =>
-                    (e.currentTarget.style.transform = "translateY(-4px)")
-                  }
-                  onMouseLeave={(e) =>
-                    (e.currentTarget.style.transform = "translateY(0)")
-                  }
+                  className="bg-white p-5 rounded-xl shadow-[0_4px_10px_rgba(0,0,0,0.05)] transition-all duration-200 ease-in-out cursor-pointer hover:-translate-y-1"
                 >
 
-                  <h3 style={{ marginTop: 0 }}>
+                  <h3 className="mt-0">
                     {app.company}
                   </h3>
 
@@ -298,7 +231,7 @@ function Dashboard() {
                     <strong>Roll:</strong> {app.role}
                   </p>
 
-                  <p style={{ fontSize: "14px", color: "#666" }}>
+                  <p className="text-sm text-[#666]">
                     {new Date(app.applied_date).toLocaleDateString()}
                   </p>
 
@@ -307,12 +240,7 @@ function Dashboard() {
                     onChange={(e) =>
                       handleStatusChange(app.id, e.target.value)
                     }
-                    style={{
-                      marginTop: "10px",
-                      padding: "6px",
-                      borderRadius: "6px",
-                      border: "1px solid #ccc"
-                    }}
+                    className="mt-2.5 p-1.5 rounded-md border border-[#ccc]"
                   >
 
                     <option value="applied">Ansökt</option>
@@ -321,23 +249,11 @@ function Dashboard() {
 
                   </select>
 
-                  <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "flex-end",
-                      marginTop: "10px"
-                    }}
-                  >
+                  <div className="flex justify-end mt-2.5">
 
                     <button
                       onClick={() => handleDelete(app.id)}
-                      style={{
-                        background: "none",
-                        border: "none",
-                        cursor: "pointer",
-                        fontSize: "18px",
-                        color: "#e74c3c"
-                      }}
+                      className="bg-none border-none cursor-pointer text-lg text-[#e74c3c]"
                     >
                       🗑
                     </button>
@@ -364,28 +280,13 @@ function StatCard({ title, value, color }) {
 
   return (
 
-    <div
-      style={{
-        background: "white",
-        padding: "20px",
-        borderRadius: "12px",
-        textAlign: "center",
-        boxShadow: "0 3px 8px rgba(0,0,0,0.04)",
-        transition: "transform 0.15s"
-      }}
-      onMouseEnter={(e) =>
-        (e.currentTarget.style.transform = "translateY(-3px)")
-      }
-      onMouseLeave={(e) =>
-        (e.currentTarget.style.transform = "translateY(0)")
-      }
-    >
+    <div className="bg-white p-5 rounded-xl text-center shadow-[0_3px_8px_rgba(0,0,0,0.04)] transition-transform duration-150 hover:-translate-y-[3px]">
 
-      <p style={{ color: "#777", marginBottom: "5px" }}>
+      <p className="text-[#777] mb-[5px]">
         {title}
       </p>
 
-      <h2 style={{ color, margin: 0 }}>
+      <h2 className="m-0" style={{ color }}>
         {value}
       </h2>
 

@@ -47,41 +47,17 @@ function Register({ onLogin }) {
   };
 
   return (
-    <div
-      style={{
-        minHeight: "100vh",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        background: "#f4f6f8",
-      }}
-    >
+    <div className="min-h-screen flex justify-center items-center bg-[#f4f6f8]">
       <form
         onSubmit={handleRegister}
-        style={{
-          background: "white",
-          padding: "40px",
-          borderRadius: "12px",
-          boxShadow: "0 3px 8px rgba(0,0,0,0.05)",
-          width: "380px",
-        }}
+        className="bg-white p-10 rounded-xl shadow-[0_3px_8px_rgba(0,0,0,0.05)] w-[380px]"
       >
-        <h2 style={{ marginBottom: "25px", textAlign: "center" }}>
+        <h2 className="mb-6 text-center">
           Skapa konto
         </h2>
 
         {error && (
-          <div
-            style={{
-              backgroundColor: "#ffebee",
-              color: "#e74c3c",
-              padding: "12px",
-              borderRadius: "8px",
-              marginBottom: "20px",
-              textAlign: "center",
-              fontSize: "14px",
-            }}
-          >
+          <div className="bg-[#ffebee] text-[#e74c3c] p-3 rounded-lg mb-5 text-center text-sm">
             {error}
           </div>
         )}
@@ -92,7 +68,7 @@ function Register({ onLogin }) {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
-          style={inputStyle}
+          className="w-full p-2.5 mb-4 border border-[#ccc] rounded-md text-sm box-border"
         />
 
         <input
@@ -102,7 +78,7 @@ function Register({ onLogin }) {
           onChange={(e) => setPassword(e.target.value)}
           required
           minLength={6}
-          style={inputStyle}
+          className="w-full p-2.5 mb-4 border border-[#ccc] rounded-md text-sm box-border"
         />
 
         <input
@@ -111,51 +87,22 @@ function Register({ onLogin }) {
           value={confirmPassword}
           onChange={(e) => setConfirmPassword(e.target.value)}
           required
-          style={{ ...inputStyle, marginBottom: "20px" }}
+          className="w-full p-2.5 mb-5 border border-[#ccc] rounded-md text-sm box-border"
         />
 
         <button
           type="submit"
           disabled={loading}
-          style={{
-            width: "100%",
-            padding: "10px",
-            background: loading ? "#ccc" : "#2c7be5",
-            border: "none",
-            color: "white",
-            fontWeight: "bold",
-            cursor: loading ? "not-allowed" : "pointer",
-            borderRadius: "8px",
-            fontSize: "14px",
-            transition: "transform 0.15s",
-            marginBottom: "15px",
-          }}
-          onMouseEnter={(e) => {
-            if (!loading) e.currentTarget.style.transform = "scale(1.05)";
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.transform = "scale(1)";
-          }}
+          className={`w-full p-2.5 border-none text-white font-bold rounded-lg text-sm transition-transform duration-150 mb-4 ${loading ? "bg-[#ccc] cursor-not-allowed" : "bg-[#2c7be5] cursor-pointer hover:scale-105"}`}
         >
           {loading ? "Skapar konto..." : "Skapa konto"}
         </button>
 
-        <p
-          style={{
-            textAlign: "center",
-            color: "#777",
-            fontSize: "14px",
-            margin: 0,
-          }}
-        >
+        <p className="text-center text-[#777] text-sm m-0">
           Har du redan ett konto?{" "}
           <Link
             to="/login"
-            style={{
-              color: "#2c7be5",
-              textDecoration: "none",
-              fontWeight: "bold",
-            }}
+            className="text-[#2c7be5] no-underline font-bold"
           >
             Logga in här
           </Link>
@@ -164,15 +111,5 @@ function Register({ onLogin }) {
     </div>
   );
 }
-
-const inputStyle = {
-  width: "100%",
-  padding: "10px",
-  marginBottom: "15px",
-  border: "1px solid #ccc",
-  borderRadius: "6px",
-  fontSize: "14px",
-  boxSizing: "border-box",
-};
 
 export default Register;

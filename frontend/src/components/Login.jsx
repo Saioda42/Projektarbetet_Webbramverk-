@@ -35,39 +35,15 @@ function Login({ onLogin }) {
   };
 
   return (
-    <div
-      style={{
-        minHeight: "100vh",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        background: "#f4f6f8",
-      }}
-    >
+    <div className="min-h-screen flex justify-center items-center bg-[#f4f6f8]">
       <form
         onSubmit={handleLogin}
-        style={{
-          background: "white",
-          padding: "40px",
-          borderRadius: "12px",
-          boxShadow: "0 3px 8px rgba(0,0,0,0.05)",
-          width: "380px",
-        }}
+        className="bg-white p-10 rounded-xl shadow-[0_3px_8px_rgba(0,0,0,0.05)] w-[380px]"
       >
-        <h2 style={{ marginBottom: "25px", textAlign: "center" }}>Logga in</h2>
+        <h2 className="mb-6 text-center">Logga in</h2>
 
         {error && (
-          <div
-            style={{
-              backgroundColor: "#ffebee",
-              color: "#e74c3c",
-              padding: "12px",
-              borderRadius: "8px",
-              marginBottom: "20px",
-              textAlign: "center",
-              fontSize: "14px",
-            }}
-          >
+          <div className="bg-[#ffebee] text-[#e74c3c] p-3 rounded-lg mb-5 text-center text-sm">
             {error}
           </div>
         )}
@@ -78,15 +54,7 @@ function Login({ onLogin }) {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
-          style={{
-            width: "100%",
-            padding: "10px",
-            marginBottom: "15px",
-            border: "1px solid #ccc",
-            borderRadius: "6px",
-            fontSize: "14px",
-            boxSizing: "border-box",
-          }}
+          className="w-full p-2.5 mb-4 border border-[#ccc] rounded-md text-sm box-border"
         />
 
         <input
@@ -95,58 +63,22 @@ function Login({ onLogin }) {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
-          style={{
-            width: "100%",
-            padding: "10px",
-            marginBottom: "20px",
-            border: "1px solid #ccc",
-            borderRadius: "6px",
-            fontSize: "14px",
-            boxSizing: "border-box",
-          }}
+          className="w-full p-2.5 mb-5 border border-[#ccc] rounded-md text-sm box-border"
         />
 
         <button
           type="submit"
           disabled={loading}
-          style={{
-            width: "100%",
-            padding: "10px",
-            background: loading ? "#ccc" : "#2c7be5",
-            border: "none",
-            color: "white",
-            fontWeight: "bold",
-            cursor: loading ? "not-allowed" : "pointer",
-            borderRadius: "8px",
-            fontSize: "14px",
-            transition: "transform 0.15s",
-          }}
-          onMouseEnter={(e) => {
-            if (!loading) e.currentTarget.style.transform = "scale(1.05)";
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.transform = "scale(1)";
-          }}
+          className={`w-full p-2.5 border-none text-white font-bold rounded-lg text-sm transition-transform duration-150 ${loading ? "bg-[#ccc] cursor-not-allowed" : "bg-[#2c7be5] cursor-pointer hover:scale-105"}`}
         >
           {loading ? "Loggar in..." : "Logga in"}
         </button>
 
-        <p
-          style={{
-            marginTop: "20px",
-            textAlign: "center",
-            color: "#777",
-            fontSize: "14px",
-          }}
-        >
+        <p className="mt-5 text-center text-[#777] text-sm">
           Inget konto än?{" "}
           <Link
             to="/register"
-            style={{
-              color: "#2c7be5",
-              textDecoration: "none",
-              fontWeight: "bold",
-            }}
+            className="text-[#2c7be5] no-underline font-bold"
           >
             Skapa konto här
           </Link>

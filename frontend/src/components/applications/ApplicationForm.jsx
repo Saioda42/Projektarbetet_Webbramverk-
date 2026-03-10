@@ -32,30 +32,12 @@ export default function ApplicationForm() {
   };
 
   return (
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "center",
-        padding: "40px",
-        background: "#f4f6f8",
-        minHeight: "100vh"
-      }}
-    >
+    <div className="flex justify-center p-10 bg-[#f4f6f8] min-h-screen">
       <form
         onSubmit={handleSubmit}
-        style={{
-          width: "420px",
-          background: "white",
-          padding: "30px",
-          borderRadius: "12px",
-          boxShadow: "0 3px 8px rgba(0,0,0,0.05)",
-          display: "flex",
-          flexDirection: "column",
-          gap: "15px",
-          height: "fit-content",
-        }}
+        className="w-[420px] bg-white p-[30px] rounded-xl shadow-[0_3px_8px_rgba(0,0,0,0.05)] flex flex-col gap-[15px] h-fit"
       >
-        <h2 style={{ marginTop: 0 }}>
+        <h2 className="mt-0">
           Lägg till ansökan
         </h2>
 
@@ -65,7 +47,7 @@ export default function ApplicationForm() {
           value={formData.company}
           onChange={handleChange}
           required
-          style={inputStyle}
+          className="p-2.5 rounded-md border border-[#ccc] text-sm"
         />
 
         <input
@@ -74,14 +56,14 @@ export default function ApplicationForm() {
           value={formData.role}
           onChange={handleChange}
           required
-          style={inputStyle}
+          className="p-2.5 rounded-md border border-[#ccc] text-sm"
         />
 
         <select
           name="status"
           value={formData.status}
           onChange={handleChange}
-          style={inputStyle}
+          className="p-2.5 rounded-md border border-[#ccc] text-sm"
         >
           <option value="applied">Ansökt</option>
           <option value="interview">Intervju</option>
@@ -93,7 +75,7 @@ export default function ApplicationForm() {
           placeholder="Källa"
           value={formData.source}
           onChange={handleChange}
-          style={inputStyle}
+          className="p-2.5 rounded-md border border-[#ccc] text-sm"
         />
 
         <textarea
@@ -101,32 +83,12 @@ export default function ApplicationForm() {
           placeholder="Anteckningar"
           value={formData.notes}
           onChange={handleChange}
-          style={{
-            ...inputStyle,
-            minHeight: "80px",
-            fontFamily: "inherit",
-          }}
+          className="p-2.5 rounded-md border border-[#ccc] text-sm min-h-[80px] font-[inherit]"
         />
 
         <button
           type="submit"
-          style={{
-            background: "#2c7be5",
-            color: "white",
-            border: "none",
-            padding: "10px",
-            borderRadius: "8px",
-            fontWeight: "bold",
-            cursor: "pointer",
-            fontSize: "14px",
-            transition: "transform 0.15s",
-          }}
-          onMouseEnter={(e) =>
-            (e.currentTarget.style.transform = "scale(1.05)")
-          }
-          onMouseLeave={(e) =>
-            (e.currentTarget.style.transform = "scale(1)")
-          }
+          className="bg-[#2c7be5] text-white border-none p-2.5 rounded-lg font-bold cursor-pointer text-sm hover:scale-105 transition-transform duration-150"
         >
           Lägg till ansökan
         </button>
@@ -134,10 +96,3 @@ export default function ApplicationForm() {
     </div>
   );
 }
-
-const inputStyle = {
-  padding: "10px",
-  borderRadius: "6px",
-  border: "1px solid #ccc",
-  fontSize: "14px",
-};
