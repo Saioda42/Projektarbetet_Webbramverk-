@@ -57,7 +57,7 @@ function Navbar({ onLogout }) {
           onMouseEnter={handleHover}
           onMouseLeave={handleLeave}
         >
-          Dashboard
+          Översikt
         </Link>
 
         <Link
@@ -66,7 +66,7 @@ function Navbar({ onLogout }) {
           onMouseEnter={handleHover}
           onMouseLeave={handleLeave}
         >
-          Contacts
+          Kontakter
         </Link>
 
         <Link
@@ -106,7 +106,7 @@ function Navbar({ onLogout }) {
             (e.currentTarget.style.transform = "scale(1)")
           }
         >
-          Logout
+          Logga ut
         </button>
 
       </div>

@@ -39,7 +39,7 @@ function Register({ onLogin }) {
       console.error("Register error:", err);
       setError(
         err.response?.data?.detail ||
-        "Kunde inte skapa konto. Email kanske redan finns."
+        "Kunde inte skapa konto. E-postadressen kanske redan finns."
       );
     } finally {
       setLoading(false);
@@ -88,7 +88,7 @@ function Register({ onLogin }) {
 
         <input
           type="email"
-          placeholder="Email"
+          placeholder="E-post"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required

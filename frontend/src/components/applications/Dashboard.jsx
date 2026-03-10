@@ -60,7 +60,7 @@ function Dashboard() {
 
   const handleDelete = async (id) => {
 
-    if (!window.confirm("Delete this application?")) return;
+    if (!window.confirm("Ta bort denna ansökan?")) return;
 
     try {
 
@@ -113,9 +113,9 @@ function Dashboard() {
   );
 
   const chartData = [
-    { name: "Applied", value: stats.applied },
-    { name: "Interview", value: stats.interview },
-    { name: "Rejected", value: stats.rejected }
+    { name: "Ansökt", value: stats.applied },
+    { name: "Intervju", value: stats.interview },
+    { name: "Avslag", value: stats.rejected }
   ];
 
   const COLORS = ["#3498db", "#f39c12", "#e74c3c"];
@@ -140,7 +140,7 @@ function Dashboard() {
         }}
       >
 
-        <h2 style={{ margin: 0 }}>Dashboard</h2>
+        <h2 style={{ margin: 0 }}>Översikt</h2>
 
         <button
           onClick={() => navigate("/applications/new")}
@@ -161,7 +161,7 @@ function Dashboard() {
             (e.currentTarget.style.transform = "scale(1)")
           }
         >
-          + Add Application
+          + Lägg till ansökan
         </button>
 
       </div>
@@ -177,10 +177,10 @@ function Dashboard() {
         }}
       >
 
-        <StatCard title="Total" value={stats.total} color="#2c3e50" />
-        <StatCard title="Applied" value={stats.applied} color="#3498db" />
-        <StatCard title="Interview" value={stats.interview} color="#f39c12" />
-        <StatCard title="Rejected" value={stats.rejected} color="#e74c3c" />
+        <StatCard title="Totalt" value={stats.total} color="#2c3e50" />
+        <StatCard title="Ansökt" value={stats.applied} color="#3498db" />
+        <StatCard title="Intervju" value={stats.interview} color="#f39c12" />
+        <StatCard title="Avslag" value={stats.rejected} color="#e74c3c" />
 
       </div>
 
@@ -207,7 +207,7 @@ function Dashboard() {
         >
 
           <h3 style={{ marginBottom: "20px" }}>
-            Application Status
+            Ansökningsstatus
           </h3>
 
           <PieChart width={300} height={250}>
@@ -246,17 +246,17 @@ function Dashboard() {
           <div style={{ marginBottom: "20px" }}>
 
             <label style={{ marginRight: "10px" }}>
-              Filter:
+              Filtrera:
             </label>
 
             <select
               value={filter}
               onChange={(e) => setFilter(e.target.value)}
             >
-              <option value="all">All</option>
-              <option value="applied">Applied</option>
-              <option value="interview">Interview</option>
-              <option value="rejected">Rejected</option>
+              <option value="all">Alla</option>
+              <option value="applied">Ansökt</option>
+              <option value="interview">Intervju</option>
+              <option value="rejected">Avslag</option>
             </select>
 
           </div>
@@ -295,7 +295,7 @@ function Dashboard() {
                   </h3>
 
                   <p>
-                    <strong>Role:</strong> {app.role}
+                    <strong>Roll:</strong> {app.role}
                   </p>
 
                   <p style={{ fontSize: "14px", color: "#666" }}>
@@ -315,9 +315,9 @@ function Dashboard() {
                     }}
                   >
 
-                    <option value="applied">Applied</option>
-                    <option value="interview">Interview</option>
-                    <option value="rejected">Rejected</option>
+                    <option value="applied">Ansökt</option>
+                    <option value="interview">Intervju</option>
+                    <option value="rejected">Avslag</option>
 
                   </select>
 

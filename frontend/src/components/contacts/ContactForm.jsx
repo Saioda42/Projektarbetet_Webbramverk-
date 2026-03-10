@@ -25,9 +25,9 @@ function ContactForm({ onContactCreated, editContact, onContactUpdated, onCancel
   };
 
   const validateEmail = (email) => {
-    if (!email.trim()) return 'Email är obligatoriskt';
+    if (!email.trim()) return 'E-post är obligatoriskt';
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) return 'Ange en giltig email-adress';
+    if (!emailRegex.test(email)) return 'Ange en giltig e-postadress';
     return null;
   };
 
@@ -148,9 +148,9 @@ function ContactForm({ onContactCreated, editContact, onContactUpdated, onCancel
 
           <div>
             <label style={{ display: "block", marginBottom: "5px", fontWeight: "600", fontSize: "14px", color: "#2c3e50" }}>
-              Email *
+              E-post *
             </label>
-            <input type="email" name="email" value={formData.email} onChange={handleChange} placeholder="namn@example.com" style={inputStyle("email")} />
+            <input type="email" name="email" value={formData.email} onChange={handleChange} placeholder="namn@exempel.se" style={inputStyle("email")} />
             {errors.email && <span style={{ color: "#e74c3c", fontSize: "12px" }}>{errors.email}</span>}
           </div>
 

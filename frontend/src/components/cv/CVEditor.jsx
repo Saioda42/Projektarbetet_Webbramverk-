@@ -193,7 +193,7 @@ function CVEditor() {
       await fetchCV();
       setNewSkill('');
     } catch (err) {
-      alert('Kunde inte lägga till skill');
+      alert('Kunde inte lägga till färdighet');
     }
   };
 
@@ -202,7 +202,7 @@ function CVEditor() {
       await deleteSkill(id);
       await fetchCV();
     } catch (err) {
-      alert('Kunde inte ta bort skill');
+      alert('Kunde inte ta bort färdighet');
     }
   };
 
@@ -238,7 +238,7 @@ function CVEditor() {
         <h3 style={{ marginTop: 0 }}>Personlig Information</h3>
         <form onSubmit={handleSavePersonalInfo}>
           <input type="text" placeholder="Fullständigt namn" value={personalInfo.full_name} onChange={(e) => setPersonalInfo({ ...personalInfo, full_name: e.target.value })} required style={inputStyle} />
-          <input type="email" placeholder="Email" value={personalInfo.email} onChange={(e) => setPersonalInfo({ ...personalInfo, email: e.target.value })} required style={inputStyle} />
+          <input type="email" placeholder="E-post" value={personalInfo.email} onChange={(e) => setPersonalInfo({ ...personalInfo, email: e.target.value })} required style={inputStyle} />
           <input type="tel" placeholder="Telefon" value={personalInfo.phone} onChange={(e) => setPersonalInfo({ ...personalInfo, phone: e.target.value })} style={inputStyle} />
           <textarea placeholder="Sammanfattning / Pitch" value={personalInfo.summary} onChange={(e) => setPersonalInfo({ ...personalInfo, summary: e.target.value })} rows="3" style={{ ...inputStyle, fontFamily: "inherit" }} />
           <button type="submit" style={btnSuccess} onMouseEnter={hoverIn} onMouseLeave={hoverOut}>
@@ -326,7 +326,7 @@ function CVEditor() {
 
       {/* Skills */}
       <section style={sectionStyle}>
-        <h3 style={{ marginTop: 0 }}>Skills</h3>
+        <h3 style={{ marginTop: 0 }}>Färdigheter</h3>
 
         <div style={{ display: "flex", flexWrap: "wrap", gap: "10px", marginBottom: "20px" }}>
           {cv?.skills?.map((skill) => (
@@ -366,7 +366,7 @@ function CVEditor() {
         <form onSubmit={handleAddSkill} style={{ display: "flex", gap: "10px" }}>
           <input
             type="text"
-            placeholder="Ny skill (t.ex. Python)"
+            placeholder="Ny färdighet (t.ex. Python)"
             value={newSkill}
             onChange={(e) => setNewSkill(e.target.value)}
             style={{ ...inputStyle, flex: 1, marginBottom: 0 }}

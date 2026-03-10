@@ -28,7 +28,7 @@ function Login({ onLogin }) {
       navigate("/");
     } catch (err) {
       console.error("Login error:", err);
-      setError(err.response?.data?.detail || "Fel email eller lösenord");
+      setError(err.response?.data?.detail || "Fel e-post eller lösenord");
     } finally {
       setLoading(false);
     }
@@ -54,7 +54,7 @@ function Login({ onLogin }) {
           width: "380px",
         }}
       >
-        <h2 style={{ marginBottom: "25px", textAlign: "center" }}>Login</h2>
+        <h2 style={{ marginBottom: "25px", textAlign: "center" }}>Logga in</h2>
 
         {error && (
           <div
@@ -74,7 +74,7 @@ function Login({ onLogin }) {
 
         <input
           type="email"
-          placeholder="Email"
+          placeholder="E-post"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
@@ -91,7 +91,7 @@ function Login({ onLogin }) {
 
         <input
           type="password"
-          placeholder="Password"
+          placeholder="Lösenord"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required

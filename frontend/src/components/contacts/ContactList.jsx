@@ -166,7 +166,7 @@ function ContactList() {
                 <strong>Roll:</strong> {contact.role || 'Ej angivet'}
               </p>
               <p style={{ fontSize: "14px", color: "#666", margin: "6px 0" }}>
-                <strong>Email:</strong> {contact.email || 'Ej angivet'}
+                <strong>E-post:</strong> {contact.email || 'Ej angivet'}
               </p>
               <p style={{ fontSize: "14px", color: "#666", margin: "6px 0" }}>
                 <strong>Telefon:</strong> {contact.phone || 'Ej angivet'}

@@ -56,12 +56,12 @@ export default function ApplicationForm() {
         }}
       >
         <h2 style={{ marginTop: 0 }}>
-          Add Application
+          Lägg till ansökan
         </h2>
 
         <input
           name="company"
-          placeholder="Company"
+          placeholder="Företag"
           value={formData.company}
           onChange={handleChange}
           required
@@ -70,7 +70,7 @@ export default function ApplicationForm() {
 
         <input
           name="role"
-          placeholder="Role"
+          placeholder="Roll"
           value={formData.role}
           onChange={handleChange}
           required
@@ -83,14 +83,14 @@ export default function ApplicationForm() {
           onChange={handleChange}
           style={inputStyle}
         >
-          <option value="applied">Applied</option>
-          <option value="interview">Interview</option>
-          <option value="rejected">Rejected</option>
+          <option value="applied">Ansökt</option>
+          <option value="interview">Intervju</option>
+          <option value="rejected">Avslag</option>
         </select>
 
         <input
           name="source"
-          placeholder="Source"
+          placeholder="Källa"
           value={formData.source}
           onChange={handleChange}
           style={inputStyle}
@@ -98,7 +98,7 @@ export default function ApplicationForm() {
 
         <textarea
           name="notes"
-          placeholder="Notes"
+          placeholder="Anteckningar"
           value={formData.notes}
           onChange={handleChange}
           style={{
@@ -128,7 +128,7 @@ export default function ApplicationForm() {
             (e.currentTarget.style.transform = "scale(1)")
           }
         >
-          Add Application
+          Lägg till ansökan
         </button>
       </form>
     </div>

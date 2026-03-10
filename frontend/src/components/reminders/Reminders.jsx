@@ -104,7 +104,7 @@ function Reminders() {
   return (
     <div style={{ padding: "40px", background: "#f4f6f8", minHeight: "100vh" }}>
 
-      <h2 style={{ marginBottom: "30px" }}>Email-påminnelser</h2>
+      <h2 style={{ marginBottom: "30px" }}>E-postpåminnelser</h2>
 
       <div
         style={{
@@ -117,7 +117,7 @@ function Reminders() {
           fontSize: "14px",
         }}
       >
-        <strong>Tips:</strong> Välj datum och tid i din lokala tidszon. Påminnelser skickas automatiskt via email!
+        <strong>Tips:</strong> Välj datum och tid i din lokala tidszon. Påminnelser skickas automatiskt via e-post!
       </div>
 
       {error && (
@@ -342,7 +342,7 @@ function Reminders() {
 
                 {reminder.is_sent && (
                   <p style={{ margin: "10px 0 0 0", fontSize: "12px", color: "#2c7be5", fontWeight: "bold" }}>
-                    Email skickat!
+                    E-post skickat!
                   </p>
                 )}
               </div>
