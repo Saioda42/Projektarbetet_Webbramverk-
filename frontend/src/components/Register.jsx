@@ -1,5 +1,3 @@
-// frontend/src/components/Register.jsx
-
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import api from "../services/api";
@@ -16,13 +14,11 @@ function Register({ onLogin }) {
     e.preventDefault();
     setError("");
 
-    // Validera att lösenorden matchar
     if (password !== confirmPassword) {
       setError("Lösenorden matchar inte");
       return;
     }
 
-    // Validera lösenordslängd
     if (password.length < 6) {
       setError("Lösenordet måste vara minst 6 tecken");
       return;
@@ -31,25 +27,19 @@ function Register({ onLogin }) {
     setLoading(true);
 
     try {
-      // Skicka register request till backend
       const response = await api.post("/auth/register", {
         email,
         password
       });
 
-      // Spara token (backend ger token direkt vid registrering)
       localStorage.setItem("token", response.data.access_token);
-      
-      // Uppdatera state
       onLogin();
-      
-      // Gå till dashboard
       navigate("/");
     } catch (err) {
       console.error("Register error:", err);
       setError(
-        err.response?.data?.detail || 
-        "Kunde inte skapa konto. Email kanske redan finns."
+        err.response?.data?.detail ||
+        "Kunde inte skapa konto. E-postadressen kanske redan finns."
       );
     } finally {
       setLoading(false);
@@ -57,57 +47,28 @@ function Register({ onLogin }) {
   };
 
   return (
-    <div
-      style={{
-        minHeight: "100vh",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        backgroundColor: "#f5f7fa"
-      }}
-    >
+    <div className="min-h-screen flex justify-center items-center bg-[#f4f6f8]">
       <form
         onSubmit={handleRegister}
-        style={{
-          backgroundColor: "white",
-          padding: "40px",
-          borderRadius: "12px",
-          boxShadow: "0 10px 25px rgba(0,0,0,0.08)",
-          width: "350px"
-        }}
+        className="bg-white p-10 rounded-xl shadow-[0_3px_8px_rgba(0,0,0,0.05)] w-[380px]"
       >
-        <h2 style={{ marginBottom: "20px", textAlign: "center" }}>
+        <h2 className="mb-6 text-center">
           Skapa konto
         </h2>
 
         {error && (
-          <div style={{
-            backgroundColor: "#ffebee",
-            color: "#c62828",
-            padding: "10px",
-            borderRadius: "4px",
-            marginBottom: "15px",
-            textAlign: "center",
-            fontSize: "14px"
-          }}>
+          <div className="bg-[#ffebee] text-[#e74c3c] p-3 rounded-lg mb-5 text-center text-sm">
             {error}
           </div>
         )}
 
         <input
           type="email"
-          placeholder="Email"
+          placeholder="E-post"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
-          style={{
-            width: "100%",
-            padding: "12px",
-            marginBottom: "15px",
-            border: "1px solid #ddd",
-            borderRadius: "6px",
-            fontSize: "16px"
-          }}
+          className="w-full p-2.5 mb-4 border border-[#ccc] rounded-md text-sm box-border"
         />
 
         <input
@@ -117,14 +78,7 @@ function Register({ onLogin }) {
           onChange={(e) => setPassword(e.target.value)}
           required
           minLength={6}
-          style={{
-            width: "100%",
-            padding: "12px",
-            marginBottom: "15px",
-            border: "1px solid #ddd",
-            borderRadius: "6px",
-            fontSize: "16px"
-          }}
+          className="w-full p-2.5 mb-4 border border-[#ccc] rounded-md text-sm box-border"
         />
 
         <input
@@ -133,48 +87,22 @@ function Register({ onLogin }) {
           value={confirmPassword}
           onChange={(e) => setConfirmPassword(e.target.value)}
           required
-          style={{
-            width: "100%",
-            padding: "12px",
-            marginBottom: "20px",
-            border: "1px solid #ddd",
-            borderRadius: "6px",
-            fontSize: "16px"
-          }}
+          className="w-full p-2.5 mb-5 border border-[#ccc] rounded-md text-sm box-border"
         />
 
         <button
           type="submit"
           disabled={loading}
-          style={{
-            width: "100%",
-            padding: "12px",
-            backgroundColor: loading ? "#ccc" : "#4CAF50",
-            border: "none",
-            color: "white",
-            fontWeight: "bold",
-            cursor: loading ? "not-allowed" : "pointer",
-            borderRadius: "6px",
-            fontSize: "16px",
-            marginBottom: "15px"
-          }}
+          className={`w-full p-2.5 border-none text-white font-bold rounded-lg text-sm transition-transform duration-150 mb-4 ${loading ? "bg-[#ccc] cursor-not-allowed" : "bg-[#2c7be5] cursor-pointer hover:scale-105"}`}
         >
           {loading ? "Skapar konto..." : "Skapa konto"}
         </button>
 
-        <p style={{ 
-          textAlign: "center",
-          color: "#666",
-          fontSize: "14px"
-        }}>
+        <p className="text-center text-[#777] text-sm m-0">
           Har du redan ett konto?{" "}
-          <Link 
-            to="/login" 
-            style={{ 
-              color: "#3498db", 
-              textDecoration: "none",
-              fontWeight: "bold"
-            }}
+          <Link
+            to="/login"
+            className="text-[#2c7be5] no-underline font-bold"
           >
             Logga in här
           </Link>

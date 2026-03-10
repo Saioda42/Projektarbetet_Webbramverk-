@@ -16,136 +16,71 @@ function ContactForm({ onContactCreated, editContact, onContactUpdated, onCancel
 
   const isEditing = !!editContact;
 
-  // Validera namn (får inte innehålla siffror, måste ha för- och efternamn)
   const validateName = (name) => {
-    if (!name.trim()) {
-      return 'Namn är obligatoriskt';
-    }
-    
-    // Kolla om det finns siffror
-    if (/\d/.test(name)) {
-      return 'Namn får inte innehålla siffror';
-    }
-    
-    // Kolla att det finns minst två ord (för- och efternamn)
+    if (!name.trim()) return 'Namn är obligatoriskt';
+    if (/\d/.test(name)) return 'Namn får inte innehålla siffror';
     const nameParts = name.trim().split(/\s+/);
-    if (nameParts.length < 2) {
-      return 'Ange både för- och efternamn';
-    }
-    
+    if (nameParts.length < 2) return 'Ange både för- och efternamn';
     return null;
   };
 
-  // Validera email
   const validateEmail = (email) => {
-    if (!email.trim()) {
-      return 'Email är obligatoriskt';
-    }
-    
+    if (!email.trim()) return 'E-post är obligatoriskt';
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      return 'Ange en giltig email-adress';
-    }
-    
+    if (!emailRegex.test(email)) return 'Ange en giltig e-postadress';
     return null;
   };
 
-  // Validera telefonnummer (internationellt format)
   const validatePhone = (phone) => {
-    if (!phone.trim()) {
-      return 'Telefonnummer är obligatoriskt';
-    }
-    
-    // Ta bort mellanslag, bindestreck och parenteser för validering
+    if (!phone.trim()) return 'Telefonnummer är obligatoriskt';
     const cleanPhone = phone.replace(/[\s\-()]/g, '');
-    
-    // Måste börja med + eller 0, följt av 7-15 siffror
-    // Accepterar: +46701234567, 0701234567, +1-555-123-4567, etc.
     const phoneRegex = /^(\+|0)[0-9]{7,15}$/;
-    
-    if (!phoneRegex.test(cleanPhone)) {
-      return 'Ange ett giltigt telefonnummer (minst 8 siffror)';
-    }
-    
+    if (!phoneRegex.test(cleanPhone)) return 'Ange ett giltigt telefonnummer (minst 8 siffror)';
     return null;
   };
 
-  // Validera företag
   const validateCompany = (company) => {
-    if (!company.trim()) {
-      return 'Företag är obligatoriskt';
-    }
-    
-    if (company.trim().length < 2) {
-      return 'Företagsnamn måste vara minst 2 tecken';
-    }
-    
+    if (!company.trim()) return 'Företag är obligatoriskt';
+    if (company.trim().length < 2) return 'Företagsnamn måste vara minst 2 tecken';
     return null;
   };
 
-  // Validera roll
   const validateRole = (role) => {
-    if (!role.trim()) {
-      return 'Roll är obligatoriskt';
-    }
-    
-    if (role.trim().length < 2) {
-      return 'Roll måste vara minst 2 tecken';
-    }
-    
+    if (!role.trim()) return 'Roll är obligatoriskt';
+    if (role.trim().length < 2) return 'Roll måste vara minst 2 tecken';
     return null;
   };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    
-    setFormData({
-      ...formData,
-      [name]: value
-    });
-
-    // Ta bort felmeddelande för detta fält när användaren börjar skriva
+    setFormData({ ...formData, [name]: value });
     if (errors[name]) {
-      setErrors({
-        ...errors,
-        [name]: null
-      });
+      setErrors({ ...errors, [name]: null });
     }
   };
 
   const validateForm = () => {
     const newErrors = {};
-
     const nameError = validateName(formData.name);
     if (nameError) newErrors.name = nameError;
-
     const emailError = validateEmail(formData.email);
     if (emailError) newErrors.email = emailError;
-
     const phoneError = validatePhone(formData.phone);
     if (phoneError) newErrors.phone = phoneError;
-
     const companyError = validateCompany(formData.company);
     if (companyError) newErrors.company = companyError;
-
     const roleError = validateRole(formData.role);
     if (roleError) newErrors.role = roleError;
-
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    // Validera alla fält
-    if (!validateForm()) {
-      return;
-    }
+    if (!validateForm()) return;
 
     try {
       setLoading(true);
-
       if (isEditing) {
         await api.put(`/contacts/${editContact.id}`, formData);
         onContactUpdated && onContactUpdated();
@@ -153,18 +88,8 @@ function ContactForm({ onContactCreated, editContact, onContactUpdated, onCancel
         await api.post('/contacts/', formData);
         onContactCreated && onContactCreated();
       }
-
-      // Rensa formuläret
-      setFormData({
-        name: '',
-        email: '',
-        phone: '',
-        company: '',
-        role: '',
-        notes: ''
-      });
+      setFormData({ name: '', email: '', phone: '', company: '', role: '', notes: '' });
       setErrors({});
-
     } catch (err) {
       setErrors({ submit: 'Kunde inte spara kontakt. Försök igen.' });
       console.error(err);
@@ -174,156 +99,62 @@ function ContactForm({ onContactCreated, editContact, onContactUpdated, onCancel
   };
 
   return (
-    <div style={{
-      border: '1px solid #ddd',
-      borderRadius: '8px',
-      padding: '20px',
-      backgroundColor: '#fff',
-      marginBottom: '20px'
-    }}>
-      <h2>{isEditing ? 'Redigera Kontakt' : 'Skapa Ny Kontakt'}</h2>
-      
+    <div className="bg-white p-[25px] rounded-xl shadow-[0_3px_8px_rgba(0,0,0,0.05)] mb-[30px]">
+      <h3 className="mt-0">
+        {isEditing ? 'Redigera Kontakt' : 'Skapa Ny Kontakt'}
+      </h3>
+
       {errors.submit && (
-        <div style={{
-          padding: '10px',
-          backgroundColor: '#ffebee',
-          color: '#c62828',
-          borderRadius: '4px',
-          marginBottom: '15px'
-        }}>
+        <div className="bg-[#ffebee] text-[#e74c3c] p-3 rounded-lg mb-5 text-sm">
           {errors.submit}
         </div>
       )}
 
       <form onSubmit={handleSubmit}>
-        {/* Namn */}
-        <div style={{ marginBottom: '15px' }}>
-          <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>
-            Namn (För- och efternamn) *
-          </label>
-          <input
-            type="text"
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-            placeholder="t.ex. Anna Andersson"
-            style={{
-              width: '100%',
-              padding: '8px',
-              borderRadius: '4px',
-              border: errors.name ? '2px solid #c62828' : '1px solid #ddd'
-            }}
-          />
-          {errors.name && (
-            <span style={{ color: '#c62828', fontSize: '14px' }}>
-              {errors.name}
-            </span>
-          )}
+        <div className="grid grid-cols-2 gap-[15px] mb-[15px]">
+          <div>
+            <label className="block mb-[5px] font-semibold text-sm text-[#2c3e50]">
+              Namn (För- och efternamn) *
+            </label>
+            <input type="text" name="name" value={formData.name} onChange={handleChange} placeholder="t.ex. Anna Andersson" className={`w-full p-2.5 rounded-md text-sm box-border ${errors.name ? "border-2 border-[#e74c3c]" : "border border-[#ccc]"}`} />
+            {errors.name && <span className="text-[#e74c3c] text-xs">{errors.name}</span>}
+          </div>
+
+          <div>
+            <label className="block mb-[5px] font-semibold text-sm text-[#2c3e50]">
+              E-post *
+            </label>
+            <input type="email" name="email" value={formData.email} onChange={handleChange} placeholder="namn@exempel.se" className={`w-full p-2.5 rounded-md text-sm box-border ${errors.email ? "border-2 border-[#e74c3c]" : "border border-[#ccc]"}`} />
+            {errors.email && <span className="text-[#e74c3c] text-xs">{errors.email}</span>}
+          </div>
+
+          <div>
+            <label className="block mb-[5px] font-semibold text-sm text-[#2c3e50]">
+              Telefonnummer *
+            </label>
+            <input type="tel" name="phone" value={formData.phone} onChange={handleChange} placeholder="t.ex. 070-123 45 67" className={`w-full p-2.5 rounded-md text-sm box-border ${errors.phone ? "border-2 border-[#e74c3c]" : "border border-[#ccc]"}`} />
+            {errors.phone && <span className="text-[#e74c3c] text-xs">{errors.phone}</span>}
+          </div>
+
+          <div>
+            <label className="block mb-[5px] font-semibold text-sm text-[#2c3e50]">
+              Företag *
+            </label>
+            <input type="text" name="company" value={formData.company} onChange={handleChange} placeholder="t.ex. Spotify AB" className={`w-full p-2.5 rounded-md text-sm box-border ${errors.company ? "border-2 border-[#e74c3c]" : "border border-[#ccc]"}`} />
+            {errors.company && <span className="text-[#e74c3c] text-xs">{errors.company}</span>}
+          </div>
+
+          <div>
+            <label className="block mb-[5px] font-semibold text-sm text-[#2c3e50]">
+              Roll *
+            </label>
+            <input type="text" name="role" value={formData.role} onChange={handleChange} placeholder="t.ex. Recruiter" className={`w-full p-2.5 rounded-md text-sm box-border ${errors.role ? "border-2 border-[#e74c3c]" : "border border-[#ccc]"}`} />
+            {errors.role && <span className="text-[#e74c3c] text-xs">{errors.role}</span>}
+          </div>
         </div>
 
-        {/* Email */}
-        <div style={{ marginBottom: '15px' }}>
-          <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>
-            Email *
-          </label>
-          <input
-            type="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            placeholder="namn@example.com"
-            style={{
-              width: '100%',
-              padding: '8px',
-              borderRadius: '4px',
-              border: errors.email ? '2px solid #c62828' : '1px solid #ddd'
-            }}
-          />
-          {errors.email && (
-            <span style={{ color: '#c62828', fontSize: '14px' }}>
-              {errors.email}
-            </span>
-          )}
-        </div>
-
-        {/* Telefon */}
-        <div style={{ marginBottom: '15px' }}>
-          <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>
-            Telefonnummer *
-          </label>
-          <input
-            type="tel"
-            name="phone"
-            value={formData.phone}
-            onChange={handleChange}
-            placeholder="t.ex. 070-123 45 67 eller +46 70 123 45 67"
-            style={{
-              width: '100%',
-              padding: '8px',
-              borderRadius: '4px',
-              border: errors.phone ? '2px solid #c62828' : '1px solid #ddd'
-            }}
-          />
-          {errors.phone && (
-            <span style={{ color: '#c62828', fontSize: '14px' }}>
-              {errors.phone}
-            </span>
-          )}
-        </div>
-
-        {/* Företag */}
-        <div style={{ marginBottom: '15px' }}>
-          <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>
-            Företag *
-          </label>
-          <input
-            type="text"
-            name="company"
-            value={formData.company}
-            onChange={handleChange}
-            placeholder="t.ex. Spotify AB"
-            style={{
-              width: '100%',
-              padding: '8px',
-              borderRadius: '4px',
-              border: errors.company ? '2px solid #c62828' : '1px solid #ddd'
-            }}
-          />
-          {errors.company && (
-            <span style={{ color: '#c62828', fontSize: '14px' }}>
-              {errors.company}
-            </span>
-          )}
-        </div>
-
-        {/* Roll */}
-        <div style={{ marginBottom: '15px' }}>
-          <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>
-            Roll *
-          </label>
-          <input
-            type="text"
-            name="role"
-            value={formData.role}
-            onChange={handleChange}
-            placeholder="t.ex. Recruiter, Hiring Manager"
-            style={{
-              width: '100%',
-              padding: '8px',
-              borderRadius: '4px',
-              border: errors.role ? '2px solid #c62828' : '1px solid #ddd'
-            }}
-          />
-          {errors.role && (
-            <span style={{ color: '#c62828', fontSize: '14px' }}>
-              {errors.role}
-            </span>
-          )}
-        </div>
-
-        {/* Anteckningar (frivilligt) */}
-        <div style={{ marginBottom: '15px' }}>
-          <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>
+        <div className="mb-5">
+          <label className="block mb-[5px] font-semibold text-sm text-[#2c3e50]">
             Anteckningar (frivilligt)
           </label>
           <textarea
@@ -332,29 +163,15 @@ function ContactForm({ onContactCreated, editContact, onContactUpdated, onCancel
             onChange={handleChange}
             rows="3"
             placeholder="Eventuella anteckningar..."
-            style={{
-              width: '100%',
-              padding: '8px',
-              borderRadius: '4px',
-              border: '1px solid #ddd',
-              fontFamily: 'inherit'
-            }}
+            className="w-full p-2.5 rounded-md border border-[#ccc] text-sm font-[inherit] box-border"
           />
         </div>
 
-        <div style={{ display: 'flex', gap: '10px' }}>
+        <div className="flex gap-2.5">
           <button
             type="submit"
             disabled={loading}
-            style={{
-              padding: '10px 20px',
-              backgroundColor: loading ? '#ccc' : '#2196F3',
-              color: 'white',
-              border: 'none',
-              borderRadius: '4px',
-              cursor: loading ? 'not-allowed' : 'pointer',
-              fontWeight: 'bold'
-            }}
+            className={`text-white border-none px-[18px] py-2.5 rounded-lg font-bold text-sm hover:scale-105 transition-transform duration-150 ${loading ? "bg-[#ccc] cursor-not-allowed" : "bg-[#2c7be5] cursor-pointer"}`}
           >
             {loading ? 'Sparar...' : (isEditing ? 'Uppdatera' : 'Skapa')}
           </button>
@@ -363,14 +180,7 @@ function ContactForm({ onContactCreated, editContact, onContactUpdated, onCancel
             <button
               type="button"
               onClick={onCancel}
-              style={{
-                padding: '10px 20px',
-                backgroundColor: '#757575',
-                color: 'white',
-                border: 'none',
-                borderRadius: '4px',
-                cursor: 'pointer'
-              }}
+              className="bg-[#6c757d] text-white border-none px-[18px] py-2.5 rounded-lg cursor-pointer font-bold text-sm hover:scale-105 transition-transform duration-150"
             >
               Avbryt
             </button>

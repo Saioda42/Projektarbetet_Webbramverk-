@@ -69,7 +69,7 @@ export default function Dashboard() {
 
   const handleDelete = async (id) => {
 
-    if (!window.confirm("Ta bort ansökan?")) return;
+    if (!window.confirm("Ta bort denna ansökan?")) return;
 
     try {
 
@@ -122,10 +122,10 @@ export default function Dashboard() {
   );
 
   const chartData = [
-    { name: "Applied", value: stats.applied },
-    { name: "Interview", value: stats.interview },
-    { name: "Offer", value: stats.offer },
-    { name: "Rejected", value: stats.rejected }
+    { name: "Ansökt", value: stats.applied },
+    { name: "Intervju", value: stats.interview },
+    { name: "Erbjudande", value: stats.offer },
+    { name: "Avslag", value: stats.rejected }
   ];
 
   const COLORS = [
@@ -137,19 +137,19 @@ export default function Dashboard() {
 
   return (
 
-    <div className="p-8 bg-gray-100 min-h-screen">
+    <div className="p-10 bg-[#f4f6f8] min-h-screen">
 
       {/* Header */}
 
       <div className="flex justify-between items-center mb-8">
 
-        <h1 className="text-2xl font-bold">
-          Dashboard
-        </h1>
+        <h2 className="text-xl font-bold">
+          Översikt
+        </h2>
 
         <button
           onClick={() => navigate("/applications/new")}
-          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-semibold transition"
+          className="bg-[#2c7be5] text-white px-4 py-2 rounded-lg font-bold hover:scale-105 transition-transform"
         >
           + Lägg till ansökan
         </button>
@@ -163,28 +163,35 @@ export default function Dashboard() {
         <StatCard
           title="Totalt"
           value={stats.total}
-          icon={<Briefcase size={28} />}
+          icon={<Briefcase size={26} />}
           color="text-gray-700"
         />
 
         <StatCard
-          title="Ansökta"
+          title="Ansökt"
           value={stats.applied}
-          icon={<Send size={28} />}
+          icon={<Send size={26} />}
           color="text-blue-600"
         />
 
         <StatCard
           title="Intervju"
           value={stats.interview}
-          icon={<Users size={28} />}
+          icon={<Users size={26} />}
           color="text-yellow-600"
+        />
+
+        <StatCard
+          title="Erbjudande"
+          value={stats.offer}
+          icon={<Briefcase size={26} />}
+          color="text-green-600"
         />
 
         <StatCard
           title="Avslag"
           value={stats.rejected}
-          icon={<XCircle size={28} />}
+          icon={<XCircle size={26} />}
           color="text-red-600"
         />
 
@@ -192,15 +199,15 @@ export default function Dashboard() {
 
       {/* Main grid */}
 
-      <div className="grid grid-cols-[350px_1fr] gap-10">
+      <div className="grid grid-cols-[360px_1fr] gap-8">
 
         {/* Chart */}
 
-        <div className="bg-white p-6 rounded-xl shadow">
+        <div className="bg-white p-6 rounded-xl shadow-[0_3px_8px_rgba(0,0,0,0.05)]">
 
-          <h2 className="text-lg font-semibold mb-4">
+          <h3 className="mb-4 font-semibold">
             Ansökningsstatus
-          </h2>
+          </h3>
 
           <PieChart width={300} height={250}>
 
@@ -235,9 +242,9 @@ export default function Dashboard() {
 
           {/* Filter */}
 
-          <div className="mb-4">
+          <div className="mb-5">
 
-            <label className="mr-2 font-medium">
+            <label className="mr-2">
               Filtrera:
             </label>
 
@@ -255,8 +262,6 @@ export default function Dashboard() {
 
           </div>
 
-          {/* Cards */}
-
           <div className="grid grid-cols-[repeat(auto-fill,260px)] gap-5">
 
             {!loading &&
@@ -264,18 +269,18 @@ export default function Dashboard() {
 
                 <div
                   key={app.id}
-                  className="bg-white p-5 rounded-xl shadow hover:-translate-y-1 transition cursor-pointer"
+                  className="bg-white p-5 rounded-xl shadow-[0_4px_10px_rgba(0,0,0,0.05)] hover:-translate-y-1 transition"
                 >
 
-                  <h3 className="font-semibold text-lg">
+                  <h3 className="font-semibold">
                     {app.company}
                   </h3>
 
-                  <p className="text-sm text-gray-600">
-                    {app.role}
+                  <p>
+                    <strong>Roll:</strong> {app.role}
                   </p>
 
-                  <p className="text-sm text-gray-400 mt-1">
+                  <p className="text-sm text-[#666]">
                     {new Date(app.applied_date).toLocaleDateString()}
                   </p>
 

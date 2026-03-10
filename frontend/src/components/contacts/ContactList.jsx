@@ -62,28 +62,31 @@ function ContactList() {
     setShowForm(false);
   };
 
-  if (loading) return <div style={{ padding: '20px' }}>Laddar kontakter...</div>;
-  if (error) return <div style={{ padding: '20px', color: 'red' }}>{error}</div>;
+  if (loading) return (
+    <div className="p-10 bg-[#f4f6f8] min-h-screen">
+      Laddar kontakter...
+    </div>
+  );
+
+  if (error) return (
+    <div className="p-10 bg-[#f4f6f8] min-h-screen text-[#e74c3c]">
+      {error}
+    </div>
+  );
 
   return (
-    <div style={{ padding: '20px', maxWidth: '1200px', margin: '0 auto' }}>
-      <h1>Mina Kontakter</h1>
-      
-      <button
-        onClick={() => setShowForm(!showForm)}
-        style={{
-          padding: '10px 20px',
-          backgroundColor: '#4CAF50',
-          color: 'white',
-          border: 'none',
-          borderRadius: '4px',
-          cursor: 'pointer',
-          marginBottom: '20px',
-          fontWeight: 'bold'
-        }}
-      >
-        {showForm ? 'Dölj Formulär' : '+ Skapa Ny Kontakt'}
-      </button>
+    <div className="p-10 bg-[#f4f6f8] min-h-screen">
+
+      <div className="flex justify-between items-center mb-[30px]">
+        <h2 className="m-0">Mina Kontakter</h2>
+
+        <button
+          onClick={() => setShowForm(!showForm)}
+          className="bg-[#2c7be5] text-white border-none px-[18px] py-2.5 rounded-lg cursor-pointer font-bold hover:scale-105 transition-transform duration-150"
+        >
+          {showForm ? 'Dölj Formulär' : '+ Skapa Ny Kontakt'}
+        </button>
+      </div>
 
       {showForm && (
         <ContactForm
@@ -93,54 +96,47 @@ function ContactList() {
           onCancel={handleCancel}
         />
       )}
-      
+
       {contacts.length === 0 ? (
-        <p>Inga kontakter än. Skapa din första!</p>
+        <div className="bg-white p-[25px] rounded-xl shadow-[0_3px_8px_rgba(0,0,0,0.05)] text-center text-[#777]">
+          Inga kontakter än. Skapa din första!
+        </div>
       ) : (
-        <div style={{ display: 'grid', gap: '15px' }}>
+        <div className="grid grid-cols-[repeat(auto-fill,280px)] gap-5">
           {contacts.map(contact => (
-            <div 
-              key={contact.id} 
-              style={{
-                border: '1px solid #ddd',
-                borderRadius: '8px',
-                padding: '15px',
-                backgroundColor: '#f9f9f9'
-              }}
+            <div
+              key={contact.id}
+              className="bg-white p-5 rounded-xl shadow-[0_4px_10px_rgba(0,0,0,0.05)] cursor-pointer hover:-translate-y-1 transition-all duration-200"
             >
-              <h3>{contact.name}</h3>
-              <p><strong>Företag:</strong> {contact.company || 'Ej angivet'}</p>
-              <p><strong>Roll:</strong> {contact.role || 'Ej angivet'}</p>
-              <p><strong>Email:</strong> {contact.email || 'Ej angivet'}</p>
-              <p><strong>Telefon:</strong> {contact.phone || 'Ej angivet'}</p>
+              <h3 className="mt-0">{contact.name}</h3>
+              <p className="text-sm text-[#666] my-1.5">
+                <strong>Företag:</strong> {contact.company || 'Ej angivet'}
+              </p>
+              <p className="text-sm text-[#666] my-1.5">
+                <strong>Roll:</strong> {contact.role || 'Ej angivet'}
+              </p>
+              <p className="text-sm text-[#666] my-1.5">
+                <strong>E-post:</strong> {contact.email || 'Ej angivet'}
+              </p>
+              <p className="text-sm text-[#666] my-1.5">
+                <strong>Telefon:</strong> {contact.phone || 'Ej angivet'}
+              </p>
               {contact.notes && (
-                <p><strong>Anteckningar:</strong> {contact.notes}</p>
+                <p className="text-sm text-[#666] my-1.5">
+                  <strong>Anteckningar:</strong> {contact.notes}
+                </p>
               )}
-              
-              <div style={{ marginTop: '10px', display: 'flex', gap: '10px' }}>
-                <button 
+
+              <div className="flex gap-2.5 mt-[15px]">
+                <button
                   onClick={() => handleEdit(contact)}
-                  style={{
-                    padding: '8px 16px',
-                    backgroundColor: '#2196F3',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '4px',
-                    cursor: 'pointer'
-                  }}
+                  className="bg-[#2c7be5] text-white border-none px-3.5 py-2 rounded-lg cursor-pointer font-semibold text-[13px] hover:scale-105 transition-transform duration-150"
                 >
                   Redigera
                 </button>
-                <button 
+                <button
                   onClick={() => handleDelete(contact.id)}
-                  style={{
-                    padding: '8px 16px',
-                    backgroundColor: '#f44336',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '4px',
-                    cursor: 'pointer'
-                  }}
+                  className="bg-[#e74c3c] text-white border-none px-3.5 py-2 rounded-lg cursor-pointer font-semibold text-[13px] hover:scale-105 transition-transform duration-150"
                 >
                   Ta bort
                 </button>

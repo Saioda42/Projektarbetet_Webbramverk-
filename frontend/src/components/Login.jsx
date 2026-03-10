@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import api from "../services/api";
 
-function Login({ onLogin }) {  // Lägg till onLogin prop här
+function Login({ onLogin }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -15,130 +15,70 @@ function Login({ onLogin }) {  // Lägg till onLogin prop här
     setLoading(true);
 
     try {
-      // Skicka login request till backend
-      const params = new URLSearchParams();
+      const formData = new URLSearchParams();
+      formData.append("username", email);
+      formData.append("password", password);
 
-params.append("username", email);
-params.append("password", password);
+      const response = await api.post("/auth/login", formData, {
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      });
 
-const response = await api.post("/auth/login", params);
-
-console.log("LOGIN RESPONSE:", response.data);
-
-localStorage.setItem("token", response.data.access_token);
-      
-      // Uppdatera state
+      localStorage.setItem("token", response.data.access_token);
       onLogin();
-      
-      // Gå till dashboard
       navigate("/");
     } catch (err) {
       console.error("Login error:", err);
-      setError(err.response?.data?.detail || "Fel email eller lösenord");
+      setError(err.response?.data?.detail || "Fel e-post eller lösenord");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div
-      style={{
-        minHeight: "100vh",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        backgroundColor: "#f5f7fa"
-      }}
-    >
+    <div className="min-h-screen flex justify-center items-center bg-[#f4f6f8]">
       <form
         onSubmit={handleLogin}
-        style={{
-          backgroundColor: "white",
-          padding: "40px",
-          borderRadius: "12px",
-          boxShadow: "0 10px 25px rgba(0,0,0,0.08)",
-          width: "350px"
-        }}
+        className="bg-white p-10 rounded-xl shadow-[0_3px_8px_rgba(0,0,0,0.05)] w-[380px]"
       >
-        <h2 style={{ marginBottom: "20px", textAlign: "center" }}>Login</h2>
+        <h2 className="mb-6 text-center">Logga in</h2>
 
         {error && (
-          <div style={{
-            backgroundColor: "#ffebee",
-            color: "#c62828",
-            padding: "10px",
-            borderRadius: "4px",
-            marginBottom: "15px",
-            textAlign: "center"
-          }}>
+          <div className="bg-[#ffebee] text-[#e74c3c] p-3 rounded-lg mb-5 text-center text-sm">
             {error}
           </div>
         )}
 
         <input
           type="email"
-          placeholder="Email"
+          placeholder="E-post"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
-          style={{
-            width: "100%",
-            padding: "12px",
-            marginBottom: "15px",
-            border: "1px solid #ddd",
-            borderRadius: "6px",
-            fontSize: "16px"
-          }}
+          className="w-full p-2.5 mb-4 border border-[#ccc] rounded-md text-sm box-border"
         />
 
         <input
           type="password"
-          placeholder="Password"
+          placeholder="Lösenord"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
-          style={{
-            width: "100%",
-            padding: "12px",
-            marginBottom: "20px",
-            border: "1px solid #ddd",
-            borderRadius: "6px",
-            fontSize: "16px"
-          }}
+          className="w-full p-2.5 mb-5 border border-[#ccc] rounded-md text-sm box-border"
         />
 
         <button
           type="submit"
           disabled={loading}
-          style={{
-            width: "100%",
-            padding: "12px",
-            backgroundColor: loading ? "#ccc" : "#3498db",
-            border: "none",
-            color: "white",
-            fontWeight: "bold",
-            cursor: loading ? "not-allowed" : "pointer",
-            borderRadius: "6px",
-            fontSize: "16px"
-          }}
+          className={`w-full p-2.5 border-none text-white font-bold rounded-lg text-sm transition-transform duration-150 ${loading ? "bg-[#ccc] cursor-not-allowed" : "bg-[#2c7be5] cursor-pointer hover:scale-105"}`}
         >
           {loading ? "Loggar in..." : "Logga in"}
         </button>
 
-        <p style={{ 
-          marginTop: "20px", 
-          textAlign: "center",
-          color: "#666",
-          fontSize: "14px"
-        }}>
+        <p className="mt-5 text-center text-[#777] text-sm">
           Inget konto än?{" "}
-          <Link 
-            to="/register" 
-            style={{ 
-              color: "#3498db", 
-              textDecoration: "none",
-              fontWeight: "bold"
-            }}
+          <Link
+            to="/register"
+            className="text-[#2c7be5] no-underline font-bold"
           >
             Skapa konto här
           </Link>

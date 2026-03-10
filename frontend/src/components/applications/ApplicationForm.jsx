@@ -15,131 +15,85 @@ export default function ApplicationForm() {
   });
 
   const handleChange = (e) => {
-
     setFormData({
       ...formData,
       [e.target.name]: e.target.value
     });
-
   };
 
   const handleSubmit = async (e) => {
-
     e.preventDefault();
-
     try {
-
       await api.post("/applications/", formData);
       navigate("/");
-
     } catch (error) {
-
       console.error("Failed to create application:", error);
-
     }
-
   };
 
   return (
-
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "center",
-        padding: "40px",
-        background: "#f4f6f8",
-        minHeight: "100vh"
-      }}
-    >
-
+    <div className="flex justify-center p-10 bg-[#f4f6f8] min-h-screen">
       <form
         onSubmit={handleSubmit}
-        style={{
-          width: "420px",
-          background: "white",
-          padding: "30px",
-          borderRadius: "12px",
-          boxShadow: "0 5px 12px rgba(0,0,0,0.05)",
-          display: "flex",
-          flexDirection: "column",
-          gap: "15px"
-        }}
+        className="w-105 bg-white p-7.5 rounded-xl shadow-[0_3px_8px_rgba(0,0,0,0.05)] flex flex-col gap-3.75 h-fit"
       >
-
-        <h2 style={{ marginTop: 0 }}>
-          Add Application
+        <h2 className="mt-0">
+          Lägg till ansökan
         </h2>
 
         <input
           name="company"
-          placeholder="Company"
+          placeholder="Företag"
           value={formData.company}
           onChange={handleChange}
           required
-          style={inputStyle}
+          className="p-2.5 rounded-md border border-[#ccc] text-sm"
         />
 
         <input
           name="role"
-          placeholder="Role"
+          placeholder="Roll"
           value={formData.role}
           onChange={handleChange}
           required
-          style={inputStyle}
+          className="p-2.5 rounded-md border border-[#ccc] text-sm"
         />
 
-        <select name="status" value={formData.status} onChange={handleChange}>
-  <option value="applied">Ansökt</option>
-  <option value="interview">Intervju</option>
-  <option value="offer">Erbjudande</option>
-  <option value="rejected">Avslag</option>
-</select>
+        <select
+          name="status"
+          value={formData.status}
+          onChange={handleChange}
+          className="p-2.5 rounded-md border border-[#ccc] text-sm"
+        >
+          <option value="applied">Ansökt</option>
+          <option value="interview">Intervju</option>
+          <option value="offer">Erbjudande</option>
+          <option value="rejected">Avslag</option>
+        </select>
 
         <input
           name="source"
-          placeholder="Source"
+          placeholder="Källa"
           value={formData.source}
           onChange={handleChange}
-          style={inputStyle}
+          className="p-2.5 rounded-md border border-[#ccc] text-sm"
         />
 
         <textarea
           name="notes"
-          placeholder="Notes"
+          placeholder="Anteckningar"
           value={formData.notes}
           onChange={handleChange}
-          style={{
-            ...inputStyle,
-            minHeight: "80px"
-          }}
+          className="p-2.5 rounded-md border border-[#ccc] text-sm min-h-20 font-[inherit]"
         />
 
         <button
           type="submit"
-          style={{
-            background: "#2c7be5",
-            color: "white",
-            border: "none",
-            padding: "10px",
-            borderRadius: "8px",
-            fontWeight: "bold",
-            cursor: "pointer"
-          }}
+          className="bg-[#2c7be5] text-white border-none p-2.5 rounded-lg font-bold cursor-pointer text-sm hover:scale-105 transition-transform duration-150"
         >
-          Add Application
+          Lägg till ansökan
         </button>
-
       </form>
-
     </div>
-
   );
-
 }
-
-const inputStyle = {
-  padding: "12px",
-  borderRadius: "6px",
-  border: "1px solid #ccc",
-  fontSize: "15px"
-};
