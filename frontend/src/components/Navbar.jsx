@@ -53,9 +53,16 @@ function Navbar({ onLogout }) {
           Platsbanken
         </Link>
 
+        <Link
+          to="/settings"
+          className="text-white no-underline text-base font-medium opacity-90 hover:opacity-100 transition-opacity duration-200"
+        >
+          Konto
+        </Link>
+
         <button
           onClick={onLogout}
-          className="bg-[#e74c3c] border-none text-white px-3.5 py-2 rounded-md cursor-pointer font-semibold transition-transform duration-150 hover:scale-105"
+          className="bg-red-500 border-none text-white px-3.5 py-2 rounded-md cursor-pointer font-semibold transition-transform duration-150 hover:scale-105"
         >
           Logga ut
         </button>

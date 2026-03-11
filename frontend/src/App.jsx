@@ -15,6 +15,8 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import CVEditor from "./components/cv/CVEditor";
 import Reminders from "./components/reminders/Reminders";
 import JobSearch from "./components/platsbanken/JobSearch";
+import AccountSettings from "./components/settings/AccountSettings";
+import PrivacyPolicy from "./components/settings/PrivacyPolicy";
 
 export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -51,10 +53,6 @@ export default function App() {
           element={<Register onLogin={handleLogin} />}
         />
 
-        {/* Dashboard */}
-        {/* Login & Register routes - alltid tillgängliga */}
-        <Route path="/login" element={<Login onLogin={handleLogin} />} />
-        <Route path="/register" element={<Register onLogin={handleLogin} />} />
         {/* Skyddade routes - kräver inloggning */}
         <Route
           path="/"
@@ -109,6 +107,15 @@ export default function App() {
             </ProtectedRoute>
           }
         />
+        <Route
+          path="/settings"
+          element={
+            <ProtectedRoute isLoggedIn={isLoggedIn}>
+              <AccountSettings onLogout={handleLogout} />
+            </ProtectedRoute>
+          }
+        />
+        <Route path="/privacy" element={<PrivacyPolicy />} />
         {/* Redirect alla andra routes till login om inte inloggad */}
         <Route path="*" element={<Navigate to="/login" replace />} />
 
