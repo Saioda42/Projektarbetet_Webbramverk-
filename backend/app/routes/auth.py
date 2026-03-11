@@ -17,6 +17,7 @@ from app.models.job_application import JobApplication
 from app.models.contact import Contact
 from app.models.cv import CV
 from app.models.reminder import Reminder
+from app.services.email_service import send_welcome_email
 
 router = APIRouter(
     prefix="/auth",
@@ -73,7 +74,13 @@ def register(user_data: UserRegister, db: Session = Depends(get_db)):
     
     # Skapa token
     access_token = create_access_token(data={"sub": new_user.email})
-    
+
+    # Skicka välkomstmail (asynkront - blockerar inte registreringen)
+    try:
+        send_welcome_email(new_user.email)
+    except Exception:
+        pass  # Registreringen lyckas även om mailet misslyckas
+
     return {"access_token": access_token, "token_type": "bearer"}
 
 

@@ -68,6 +68,50 @@ def send_reminder_email(to_email: str, title: str, description: str):
         return False
 
 
+def send_welcome_email(to_email: str):
+    """Skickar ett välkomstmail efter registrering"""
+
+    if not SMTP_USERNAME or not SMTP_PASSWORD:
+        print("SMTP credentials saknas!")
+        return False
+
+    try:
+        msg = MIMEMultipart()
+        msg['From'] = FROM_EMAIL
+        msg['To'] = to_email
+        msg['Subject'] = "Välkommen till JobTracker!"
+
+        body = """
+        Hej och välkommen till JobTracker!
+
+        Ditt konto har skapats. Nu kan du:
+
+        - Spåra dina jobbansökningar
+        - Hantera kontakter
+        - Skapa och uppdatera ditt CV
+        - Sätta påminnelser med automatiska e-postnotiser
+        - Söka jobb via Platsbanken
+
+        Lycka till med jobbsökandet!
+
+        / JobTracker-teamet
+        """
+
+        msg.attach(MIMEText(body, 'plain'))
+
+        with smtplib.SMTP(SMTP_SERVER, SMTP_PORT) as server:
+            server.starttls()
+            server.login(SMTP_USERNAME, SMTP_PASSWORD)
+            server.send_message(msg)
+
+        print(f"Välkomstmail skickat till {to_email}")
+        return True
+
+    except Exception as e:
+        print(f"Kunde inte skicka välkomstmail: {str(e)}")
+        return False
+
+
 def test_email_connection():
     """Testa om email-konfiguration funkar"""
     if not SMTP_USERNAME or not SMTP_PASSWORD:
