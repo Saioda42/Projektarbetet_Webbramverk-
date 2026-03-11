@@ -1,3 +1,9 @@
+export const config = {
+  api: {
+    bodyParser: true,
+  },
+};
+
 export default async function handler(req, res) {
   const path = Array.isArray(req.query.path)
     ? req.query.path.join("/")
@@ -9,19 +15,24 @@ export default async function handler(req, res) {
   if (req.headers.authorization) {
     headers["Authorization"] = req.headers.authorization;
   }
-  if (req.headers["content-type"]) {
-    headers["Content-Type"] = req.headers["content-type"];
-  }
 
   let body = undefined;
+  const contentType = req.headers["content-type"] || "";
+
   if (req.method !== "GET" && req.method !== "HEAD") {
-    const contentType = req.headers["content-type"] || "";
     if (contentType.includes("application/x-www-form-urlencoded")) {
-      body = new URLSearchParams(req.body).toString();
+      headers["Content-Type"] = "application/x-www-form-urlencoded";
+      if (typeof req.body === "object") {
+        body = new URLSearchParams(req.body).toString();
+      } else {
+        body = req.body;
+      }
     } else if (contentType.includes("application/json")) {
-      body = JSON.stringify(req.body);
+      headers["Content-Type"] = "application/json";
+      body = typeof req.body === "string" ? req.body : JSON.stringify(req.body);
     } else {
-      body = req.body;
+      headers["Content-Type"] = contentType;
+      body = typeof req.body === "string" ? req.body : JSON.stringify(req.body);
     }
   }
 
@@ -32,10 +43,10 @@ export default async function handler(req, res) {
       body,
     });
 
-    const contentType = response.headers.get("content-type") || "";
+    const respContentType = response.headers.get("content-type") || "";
     const data = await response.text();
 
-    res.setHeader("Content-Type", contentType);
+    res.setHeader("Content-Type", respContentType);
     res.status(response.status).send(data);
   } catch (error) {
     res.status(502).json({ error: "Backend unreachable" });
