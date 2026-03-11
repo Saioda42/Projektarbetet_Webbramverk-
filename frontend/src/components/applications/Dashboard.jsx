@@ -1,4 +1,10 @@
 import {
+  DragDropContext,
+  Droppable,
+  Draggable
+} from "@hello-pangea/dnd";
+
+import {
   getApplications,
   deleteApplication,
   getApplicationStats
@@ -6,7 +12,7 @@ import {
 
 import api from "../../services/api";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 
 import {
@@ -31,6 +37,7 @@ export default function Dashboard() {
   const [applications, setApplications] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState("all");
+  const [search, setSearch] = useState("");
   const [selectedApplication, setSelectedApplication] = useState(null);
 
   const [stats, setStats] = useState({
@@ -42,6 +49,7 @@ export default function Dashboard() {
   });
 
   useEffect(() => {
+    setLoading(true);
     loadData();
   }, []);
 
@@ -85,21 +93,14 @@ export default function Dashboard() {
         prev.filter(app => app.id !== id)
       );
 
-      loadData();
-
     } catch (error) {
       console.error("Delete failed:", error);
     }
   };
 
   const handleStatusChange = async (id, newStatus) => {
-
     try {
-
-      await api.put(`/applications/${id}`, {
-        status: newStatus
-      });
-
+      await api.put(`/applications/${id}`, { status: newStatus });
       setApplications(prev =>
         prev.map(app =>
           app.id === id
@@ -107,19 +108,24 @@ export default function Dashboard() {
             : app
         )
       );
-
-      loadData();
-
     } catch (error) {
       console.error("Status update failed:", error);
     }
   };
 
-  const filteredApplications = applications.filter(
-    app =>
-      filter === "all" ||
-      app.status?.toLowerCase() === filter
-  );
+  const filteredApplications = useMemo(() => {
+    return applications.filter(app => {
+      const matchesStatus =
+        filter === "all" ||
+        app.status?.toLowerCase() === filter;
+
+      const matchesSearch =
+        app.company.toLowerCase().includes(search.toLowerCase()) ||
+        app.role.toLowerCase().includes(search.toLowerCase());
+
+      return matchesStatus && matchesSearch;
+    });
+  }, [applications, filter, search]);
 
   const chartData = [
     { name: "Ansökt", value: stats.applied },
@@ -142,9 +148,37 @@ export default function Dashboard() {
     rejected: "border-l-4 border-red-500"
   };
 
+  const columns = [
+    { id: "applied",   title: "Ansökt" },
+    { id: "interview", title: "Intervju" },
+    { id: "offer",     title: "Erbjudande" },
+    { id: "rejected",  title: "Avslag" }
+  ];
+
+  const onDragEnd = async (result) => {
+    if (!result.destination) return;
+    if (result.destination.droppableId === result.source.droppableId) return;
+
+    const newStatus = result.destination.droppableId;
+    const id = result.draggableId;
+
+    try {
+      await api.put(`/applications/${id}`, { status: newStatus });
+      setApplications(prev =>
+        prev.map(app =>
+          app.id.toString() === id
+            ? { ...app, status: newStatus }
+            : app
+        )
+      );
+    } catch (err) {
+      console.error("Drag update failed", err);
+    }
+  };
+
   return (
 
-    <div className="p-10 bg-[#f4f6f8] min-h-screen">
+    <div className="p-10 bg-gradient-to-b from-[#f4f6f8] to-[#eef2f6] min-h-screen">
 
       <div className="max-w-7xl mx-auto">
 
@@ -192,6 +226,52 @@ export default function Dashboard() {
         </div>
 
       </div>
+
+      {/* KANBAN */}
+
+      <DragDropContext onDragEnd={onDragEnd}>
+        <div className="grid grid-cols-4 gap-6 mt-10 mb-10">
+          {columns.map(column => (
+            <Droppable droppableId={column.id} key={column.id}>
+              {(provided) => (
+                <div
+                  ref={provided.innerRef}
+                  {...provided.droppableProps}
+                  className="bg-white rounded-xl p-4 shadow min-h-[300px]"
+                >
+                  <h3 className="font-semibold mb-4">
+                    {column.title}
+                    <span className="ml-2 text-sm text-gray-400 font-normal">
+                      ({applications.filter(a => a.status === column.id).length})
+                    </span>
+                  </h3>
+
+                  {applications
+                    .filter(app => app.status === column.id)
+                    .map((app, index) => (
+                      <Draggable key={app.id} draggableId={app.id.toString()} index={index}>
+                        {(provided) => (
+                          <div
+                            ref={provided.innerRef}
+                            {...provided.draggableProps}
+                            {...provided.dragHandleProps}
+                            onClick={() => setSelectedApplication(app)}
+                            className={`bg-gray-50 p-3 rounded-lg shadow mb-3 cursor-pointer hover:shadow-md ${statusBorder[app.status]}`}
+                          >
+                            <p className="font-semibold">{app.company}</p>
+                            <p className="text-sm text-gray-500">{app.role}</p>
+                          </div>
+                        )}
+                      </Draggable>
+                    ))}
+
+                  {provided.placeholder}
+                </div>
+              )}
+            </Droppable>
+          ))}
+        </div>
+      </DragDropContext>
 
       {/* MAIN GRID */}
 
@@ -259,23 +339,29 @@ export default function Dashboard() {
 
       <div>
 
-        <div className="mb-5">
+        <div className="flex gap-4 mb-5 items-center">
 
-          <label className="mr-2">Filtrera:</label>
+  <input
+    type="text"
+    placeholder="Sök företag eller roll..."
+    value={search}
+    onChange={(e) => setSearch(e.target.value)}
+    className="border rounded-md px-3 py-2 text-sm w-64 focus:outline-none focus:ring-2 focus:ring-blue-400"
+  />
 
-          <select
-            value={filter}
-            onChange={(e) => setFilter(e.target.value)}
-            className="border rounded px-2 py-1"
-          >
-            <option value="all">Alla</option>
-            <option value="applied">Ansökt</option>
-            <option value="interview">Intervju</option>
-            <option value="offer">Erbjudande</option>
-            <option value="rejected">Avslag</option>
-          </select>
+  <select
+    value={filter}
+    onChange={(e) => setFilter(e.target.value)}
+    className="border rounded px-2 py-1"
+  >
+    <option value="all">Alla</option>
+    <option value="applied">Ansökt</option>
+    <option value="interview">Intervju</option>
+    <option value="offer">Erbjudande</option>
+    <option value="rejected">Avslag</option>
+  </select>
 
-        </div>
+</div>
 
         <div className="grid grid-cols-[repeat(auto-fill,260px)] gap-5">
 
@@ -286,7 +372,7 @@ export default function Dashboard() {
             <div
               key={app.id}
               onClick={() => setSelectedApplication(app)}
-              className={`bg-white p-5 rounded-xl shadow hover:shadow-xl hover:-translate-y-1 hover:scale-[1.02] transition-all duration-200 cursor-pointer ${statusBorder[app.status]}`}
+              className={`bg-white p-5 rounded-xl shadow hover:shadow-2xl hover:-translate-y-1 hover:scale-[1.02] transition-all duration-200 cursor-pointer ${statusBorder[app.status]}`}
             >
 
               <h3 className="font-semibold">{app.company}</h3>
@@ -297,7 +383,25 @@ export default function Dashboard() {
                 {new Date(app.applied_date).toLocaleDateString()}
               </p>
 
-              <StatusBadge status={app.status}/>
+              <div className="flex justify-between items-center mt-2">
+                <StatusBadge status={app.status} />
+              </div>
+
+              <select
+                value={app.status}
+                onClick={(e) => e.stopPropagation()}
+                onChange={(e) => {
+                  e.stopPropagation();
+                  handleStatusChange(app.id, e.target.value);
+                }}
+                className="mt-2 w-full border rounded px-2 py-1 text-sm"
+              >
+                <option value="applied">Ansökt</option>
+                <option value="interview">Intervju</option>
+                <option value="offer">Erbjudande</option>
+                <option value="rejected">Avslag</option>
+              </select>
+
               <StatusProgress status={app.status}/>
 
             </div>
@@ -317,48 +421,82 @@ export default function Dashboard() {
       {selectedApplication && (
 
       <div
-        onClick={() => setSelectedApplication(null)}
-        className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 animate-fadeIn"
-      >
+    onClick={() => setSelectedApplication(null)}
+    className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 animate-fadeIn"
+  >
 
-        <div
-          onClick={(e)=>e.stopPropagation()}
-          className="bg-white rounded-xl p-6 w-[400px] shadow-xl animate-modalIn"
-        >
+    <div
+      onClick={(e) => e.stopPropagation()}
+      className="bg-white rounded-xl p-7 w-[420px] shadow-xl animate-modalIn"
+    >
 
-          <h2 className="text-xl font-bold mb-4">
-            {selectedApplication.company}
-          </h2>
+      {/* Header */}
 
-          <p><strong>Roll:</strong> {selectedApplication.role}</p>
+      <div className="mb-5">
 
-          <p><strong>Status:</strong> {selectedApplication.status}</p>
+        <h2 className="text-xl font-bold">
+          {selectedApplication.company}
+        </h2>
 
-          <p className="mb-2">
-            <strong>Ansökt:</strong>{" "}
-            {new Date(selectedApplication.applied_date).toLocaleDateString()}
-          </p>
-
-          {selectedApplication.source && (
-            <p><strong>Källa:</strong> {selectedApplication.source}</p>
-          )}
-
-          {selectedApplication.notes && (
-            <p className="mt-2">
-              <strong>Anteckningar:</strong> {selectedApplication.notes}
-            </p>
-          )}
-
-          <button
-            onClick={()=>setSelectedApplication(null)}
-            className="mt-4 bg-gray-200 px-4 py-2 rounded hover:bg-gray-300"
-          >
-            Stäng
-          </button>
-
-        </div>
+        <p className="text-gray-500 text-sm">
+          {selectedApplication.role}
+        </p>
 
       </div>
+
+      {/* Info */}
+
+      <div className="space-y-2 text-sm">
+
+        <p>
+          <strong>Status:</strong> {selectedApplication.status}
+        </p>
+
+        <p>
+          <strong>Ansökt:</strong>{" "}
+          {new Date(selectedApplication.applied_date).toLocaleDateString()}
+        </p>
+
+        {selectedApplication.source && (
+          <p>
+            <strong>Källa:</strong> {selectedApplication.source}
+          </p>
+        )}
+
+        {selectedApplication.notes && (
+          <p>
+            <strong>Anteckningar:</strong> {selectedApplication.notes}
+          </p>
+        )}
+
+      </div>
+
+      {/* Actions */}
+
+      <div className="flex justify-end gap-3 mt-6">
+
+        <button
+          onClick={() => {
+            handleDelete(selectedApplication.id)
+            setSelectedApplication(null)
+          }}
+          className="text-red-600 hover:text-red-800 text-sm"
+        >
+          Ta bort
+        </button>
+
+        <button
+          onClick={() => setSelectedApplication(null)}
+          className="bg-gray-200 px-4 py-2 rounded hover:bg-gray-300 text-sm"
+        >
+          Stäng
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
 
       )}
 
@@ -396,6 +534,7 @@ function PipelineStep({label,value,color}){
     </div>
   )
 }
+
 
 function StatusBadge({ status }) {
 
