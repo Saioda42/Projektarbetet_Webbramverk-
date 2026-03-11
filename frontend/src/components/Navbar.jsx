@@ -4,65 +4,64 @@ function Navbar({ onLogout }) {
 
   return (
 
-    <nav
-      className="bg-[#2c3e50] px-10 py-4.5 flex justify-between items-center text-white shadow-[0_2px_6px_rgba(0,0,0,0.1)]"
-    >
+    <nav className="bg-[#2c3e50] px-10 py-4 flex justify-between items-center text-white shadow-[0_2px_6px_rgba(0,0,0,0.1)]">
 
-      <h1
-        className="m-0 text-[22px] font-bold"
+      {/* Logo */}
+      <Link
+        to="/"
+        className="text-lg font-bold text-white hover:text-gray-200 transition"
       >
         JobTracker
-      </h1>
+      </Link>
 
-      <div
-        className="flex gap-7 items-center"
-      >
+      {/* Navigation */}
+      <div className="flex gap-7 items-center">
 
         <Link
           to="/"
-          className="text-white no-underline text-base font-medium opacity-90 hover:opacity-100 transition-opacity duration-200"
+          className="text-white text-base font-medium opacity-90 hover:opacity-100 transition-opacity duration-200"
         >
           Översikt
         </Link>
 
         <Link
           to="/contacts"
-          className="text-white no-underline text-base font-medium opacity-90 hover:opacity-100 transition-opacity duration-200"
+          className="text-white text-base font-medium opacity-90 hover:opacity-100 transition-opacity duration-200"
         >
           Kontakter
         </Link>
 
         <Link
           to="/cv"
-          className="text-white no-underline text-base font-medium opacity-90 hover:opacity-100 transition-opacity duration-200"
+          className="text-white text-base font-medium opacity-90 hover:opacity-100 transition-opacity duration-200"
         >
           Mitt CV
         </Link>
 
         <Link
           to="/reminders"
-          className="text-white no-underline text-base font-medium opacity-90 hover:opacity-100 transition-opacity duration-200"
+          className="text-white text-base font-medium opacity-90 hover:opacity-100 transition-opacity duration-200"
         >
           Påminnelser
         </Link>
 
         <Link
           to="/platsbanken"
-          className="text-white no-underline text-base font-medium opacity-90 hover:opacity-100 transition-opacity duration-200"
+          className="text-white text-base font-medium opacity-90 hover:opacity-100 transition-opacity duration-200"
         >
           Platsbanken
         </Link>
 
         <Link
           to="/settings"
-          className="text-white no-underline text-base font-medium opacity-90 hover:opacity-100 transition-opacity duration-200"
+          className="text-white text-base font-medium opacity-90 hover:opacity-100 transition-opacity duration-200"
         >
           Konto
         </Link>
 
         <button
           onClick={onLogout}
-          className="bg-red-500 border-none text-white px-3.5 py-2 rounded-md cursor-pointer font-semibold transition-transform duration-150 hover:scale-105"
+          className="bg-red-500 text-white px-4 py-2 rounded-md font-semibold hover:scale-105 transition-transform duration-150"
         >
           Logga ut
         </button>
